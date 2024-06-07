@@ -16,9 +16,9 @@ def main_menu():
     while True:
         # Menú principal de selección de servicios
         print("\nSeleccione un servicio:")
-        print("1. Gestión de Usuarios")
-        print("2. Gestión de Comunidad")
-        print("3. Gestion de Foros")
+        print("1. Gestión de Usuarios, check")
+        print("2. Gestión de Comunidad, check")
+        print("3. Gestion de Foros, check")
         print("4. Salir")
         
         servicio = input("Ingrese el número del servicio: ")

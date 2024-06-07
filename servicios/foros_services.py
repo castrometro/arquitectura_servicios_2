@@ -35,6 +35,9 @@ def handle_get_foro(data):
     foro = get_foro(data['id_foro'])
     return json.dumps(foro.to_dict())
 
+# Funcion para ver todos los foros (pdte)
+
+
 def handle_update_foro(data):
     required_fields = ['id_foro', 'tipo_foro', 'estado_foro', 'tema_foro']
     missing_fields = [field for field in required_fields if field not in data]
