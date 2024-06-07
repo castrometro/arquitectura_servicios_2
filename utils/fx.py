@@ -9,7 +9,10 @@ def gestion_usuarios(sock):
         print("2. Actualizar usuario")
         print("3. Eliminar usuario")
         print("4. Crear usuario")
-        print("5. Volver al menú principal")
+        print("5. Loguear usuario")
+        print("6. Registrar usuario")
+        print("7. Ver Usuario")
+        print("8. Volver al menú principal")
         
         opcion = input("Ingrese el número de la operación: ")
         
@@ -34,7 +37,6 @@ def gestion_usuarios(sock):
                 amount_received += len(data)
             print("Checking servi answer ...")
             print('received {!r}'.format(data))
-
 
         elif opcion == '2':
             # Solicitar datos del usuario a actualizar
@@ -75,7 +77,7 @@ def gestion_usuarios(sock):
 
             # Transformar datos a DATA del JSON
             json = {
-                "name_function": "all",
+                "name_function": "update",
                  "data": {
                         "id_usuario": id_usuario,
                         "rut": rut_usuario,
@@ -108,7 +110,7 @@ def gestion_usuarios(sock):
             # Solicitar ID del usuario a eliminar
             user_id = input("Ingrese el ID del usuario a eliminar: ")
             json = {
-                "name_function": "all",
+                "name_function": "delete",
                 "data": {
                     "id_usuario": user_id,
                 }
@@ -142,7 +144,7 @@ def gestion_usuarios(sock):
             contrasena = input("Ingrese la contraseña del nuevo usuario: ")
             # Transformar datos a DATA del JSON
             json = {
-                "name_function": "all",
+                "name_function": "create",
                  "data": {
                         "id_usuario": id_usuario,
                         "rut": rut,
@@ -173,6 +175,100 @@ def gestion_usuarios(sock):
             print('received {!r}'.format(data))
 
         elif opcion == '5':
+            # Solicitar datos de logueo
+            rut = input("Ingrese el rut del usuario: ")
+            contrasena = input("Ingrese la contraseña del usuario: ")
+            # Transformar datos a DATA del JSON
+            json = {
+                "name_function": "login",
+                 "data": {
+                        "rut": rut,
+                        "contrasena": contrasena
+                 }
+            }
+
+            message = dt.create_transaction("suser", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '6':
+            # Solicitar datos de registro
+            rut = input("Ingrese el rut del usuario: ")
+            tipo_usuario = input("Ingrese el tipo del usuario: ")
+            correo = input("Ingrese el email del usuario: ")
+            fono = input("Ingrese el fono del usuario: ")
+            nombre = input("Ingrese el nombre del usuario: ")
+            apellido_paterno = input("Ingrese el apellido paterno del usuario: ")
+            apellido_materno = input("Ingrese el apellido materno del usuario: ")
+            estado_cuenta = input("Ingrese el estado de cuenta del usuario: ")
+            contrasena = input("Ingrese la contraseña del usuario: ")
+            # Transformar datos a DATA del JSON
+            json = {
+                "name_function": "register",
+                 "data": {
+                        "rut": rut,
+                        "tipo_usuario": tipo_usuario,
+                        "correo": correo,
+                        "fono": fono,
+                        "nombre": nombre,
+                        "apellido_paterno": apellido_paterno,
+                        "apellido_materno": apellido_materno,
+                        "estado_cuenta": estado_cuenta,
+                        "contrasena": contrasena
+                 }
+            }
+
+            message = dt.create_transaction("suser", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+       
+        elif opcion == '7':
+            # Solicitar ID del usuario a ver
+            user_id = input("Ingrese el ID del usuario a ver: ")
+            json = {
+                "name_function": "get",
+                "data": {
+                    "id_usuario": user_id,
+                }
+            }
+            message = dt.create_transaction("suser", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+       
+        elif opcion == '8':
             # Volver al menú principal
             break
         else:
