@@ -68,13 +68,3 @@ def run_service(process_data, name_service):
     finally:
         print('closing socket')
         sock.close()
-
-# Ejemplo de uso de run_service
-def process_comunidad_service(data):
-    # Aquí pones la lógica para procesar la solicitud de comunidad
-    print("Procesando comunidad:", data)
-    return {'status': 'success'}
-
-# Llamada de ejemplo
-if __name__ == "__main__":
-    run_service(process_comunidad_service, 'comun')
