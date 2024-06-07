@@ -273,3 +273,19 @@ def gestion_usuarios(sock):
             break
         else:
             print("Opción no válida. Inténtelo de nuevo.")
+
+
+
+
+def gestion_productos(sock):
+    return 0
+
+
+def gestion_comunidad(sock):
+    return 0
+
+def gestion_servicios(sock):
+    return 0
+
+def gestion_foros(sock):
+    return 0

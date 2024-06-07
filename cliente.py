@@ -30,6 +30,21 @@ def main_menu():
             finally:
                 print('closing socket')
                 sock.close()
+
+        if servicio == '2':
+            sock = connect_to_bus()
+            try:
+                gestion_comunidad(sock)
+            finally:
+                print('closing socket')
+                sock.close()
+        if servicio == '3':
+            sock = connect_to_bus()
+            try:
+                gestion_foros(sock)
+            finally:
+                print('closing socket')
+                sock.close()
         
         elif servicio == '4':
             print("Saliendo del programa.")
