@@ -2,11 +2,15 @@ import sys
 import os
 import json
 import bcrypt
+import logging
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
 from db.usuarios import create_usuario, get_usuario, get_usuarios, get_usuario_by_rut, delete_usuario, update_usuario, login_usuario, register_usuario
+
+# Configurar logging
+logging.basicConfig(filename='user_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
 
 def handle_create_user(data):
     required_fields = ['rut', 'tipo_usuario', 'correo', 'fono', 'nombre', 'apellido_paterno', 'apellido_materno', 'estado_cuenta', 'contrasena']
@@ -119,4 +123,6 @@ def process_user_service(data):
     else:
         return json.dumps({'error': 'Invalid function name'})
 
-
+if __name__ == "__main__":
+    logging.info('User service started')
+    bus.run_service(process_user_service, 'suser')

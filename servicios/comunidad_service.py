@@ -1,11 +1,15 @@
 import sys
 import os
 import json
+import logging
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
 from db.comunidad import create_comunidad, get_comunidades, get_comunidad, update_comunidad, delete_comunidad
+
+# Configurar logging
+logging.basicConfig(filename='comunidad_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
 
 def handle_create_comunidad(data):
     required_fields = ['nombre_comunidad']
@@ -63,3 +67,7 @@ def process_comunidad_service(data):
         return handle_delete_comunidad(data)
     else:
         return json.dumps({'error': 'Invalid function name'})
+
+if __name__ == "__main__":
+    logging.info('Comunidad service started')
+    bus.run_service(process_comunidad_service, 'comun')
