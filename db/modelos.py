@@ -1,6 +1,11 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Text, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+from dotenv import load_dotenv
+import os
+
+# Cargar las variables de entorno desde el archivo .env
+load_dotenv()
 
 Base = declarative_base()
 
@@ -74,6 +79,7 @@ class Usuario(Base):
     apellido_materno = Column(String(50))
     estado_cuenta = Column(String(50))
     contrasena = Column(String(50))
+    
     def to_dict(self):
         return {
             'id_usuario': self.id_usuario,
@@ -86,6 +92,7 @@ class Usuario(Base):
             'apellido_materno': self.apellido_materno,
             'estado_cuenta': self.estado_cuenta
         }
+    
     def to_dict_private(self):
         return {
             'id_usuario': self.id_usuario,
@@ -198,7 +205,7 @@ class ForoMensaje(Base):
 
 def get_session():
     # Configuración de la base de datos
-    DATABASE_URL = 'postgresql://finflow:finflow@localhost:5432/arquitectura_servicios'
+    DATABASE_URL = os.getenv('DB_CONNECTION_STRING')
     engine = create_engine(DATABASE_URL)
 
     # Crear todas las tablas
@@ -209,8 +216,10 @@ def get_session():
     """Crea y retorna una nueva sesión."""
     return Session()
 
+# Comprobar que la variable de entorno se cargue correctamente
+
 # Conexión a la base de datos
-engine = create_engine('postgresql://finflow:finflow@localhost:5432/arquitectura_servicios')
+engine = create_engine(os.getenv('DB_CONNECTION_STRING'))
 
 # Base.metadata.drop_all(engine)
 # Crear todas las tablas
