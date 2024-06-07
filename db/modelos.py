@@ -198,7 +198,7 @@ class ForoMensaje(Base):
 
 def get_session():
     # Configuración de la base de datos
-    DATABASE_URL = 'postgresql://finflow:finflow@localhost:5432/arquitectura_servicios'
+    DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
     engine = create_engine(DATABASE_URL)
 
     # Crear todas las tablas
@@ -210,7 +210,7 @@ def get_session():
     return Session()
 
 # Conexión a la base de datos
-engine = create_engine('postgresql://finflow:finflow@localhost:5432/arquitectura_servicios')
+engine = create_engine('postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios')
 
 # Base.metadata.drop_all(engine)
 # Crear todas las tablas

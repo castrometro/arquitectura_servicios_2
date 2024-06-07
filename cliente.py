@@ -1,40 +1,42 @@
 import socket
 import utils.data_transaction as dt
+from utils.fx import *
 
-# Crear un socket TCP/IP
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def connect_to_bus():
+    # Crear un socket TCP/IP
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    # Conectar el socket al puerto donde el bus está escuchando
+    bus_address = ('localhost', 5000)
+    print('connecting to {} port {}'.format(*bus_address))
+    sock.connect(bus_address)
+    return sock
 
-# Conectar el socket al puerto donde el bus está escuchando
-bus_address = ('localhost', 5000)
-print('connecting to {} port {}'.format(*bus_address))
-sock.connect(bus_address)
 
-try:
+def main_menu():
     while True:
-        # Enviar "Hello world" al servicio
-        if input('Send Hello world to servi? y/n: ') != 'y':
+        # Menú principal de selección de servicios
+        print("\nSeleccione un servicio:")
+        print("1. Gestión de Usuarios")
+        print("2. Gestión de Comunidad")
+        print("3. Gestion de Foros")
+        print("4. Salir")
+        
+        servicio = input("Ingrese el número del servicio: ")
+        
+        if servicio == '1':
+            sock = connect_to_bus()
+            try:
+                gestion_usuarios(sock)
+            finally:
+                print('closing socket')
+                sock.close()
+        
+        elif servicio == '4':
+            print("Saliendo del programa.")
             break
-        json = {
-            "name_function": "all",
-            # "data": {
-            #     "name": "comunidad",
-            # }
-        }
-        message = dt.create_transaction("comun", json)
-        print('sending {!r}'.format(message))
-        sock.sendall(message)
 
-        # Esperar la respuesta
-        print("Waiting for transaction")
-        amount_received = 0
-        amount_expected = int(sock.recv(5))
+        else:
+            print("Opción no válida. Inténtelo de nuevo.")
 
-        while amount_received < amount_expected:
-            data = sock.recv(amount_expected - amount_received)
-            amount_received += len(data)
-        print("Checking servi answer ...")
-        print('received {!r}'.format(data))
-
-finally:
-    print('closing socket')
-    sock.close()
+if __name__ == "__main__":
+    main_menu()
