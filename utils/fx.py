@@ -288,10 +288,12 @@ def gestion_comunidad(sock):
         opcion = input("Ingrese el número de la operación: ")
         
         if opcion == '1':
+            # Solicitar datos de la nueva comunidad
+            comunidad = input("Ingrese el nombre de la nueva comunidad: ")
             json = {
                 "name_function": "create",
                  "data": {
-                     "name": "comunidad",
+                     "nombre_comunidad": comunidad,
                  }
             }
             message = dt.create_transaction("comun", json)
@@ -366,7 +368,7 @@ def gestion_comunidad(sock):
             json = {
                 "name_function": "update",
                  "data": {
-                        "id_comunidad": comunidad_id,
+                        "id_comunidad": id_comunidad,
                         "nombre_comunidad": nombre_comunidad,
                  }
             }
@@ -427,7 +429,7 @@ def gestion_foros(sock):
         print("\nSeleccione una operación de Gestión de Foros:")
         print("1. Crear Foro")
         print("2. Ver Foro")
-        print("3. Mostrar Foros") ('pendiente')
+        print("3. Mostrar Foros")
         print("4. Actualizar Foro")
         print("5. Eliminar Foro")
         print("6. Volver al menú principal")
@@ -492,27 +494,6 @@ def gestion_foros(sock):
             print("Checking servi answer ...")
             print('received {!r}'.format(data))
         
-        elif opcion == '3':
-            json = {
-                "name_function": "all",
-                 "data": {
-                     "name": "foros",
-                 }
-            }
-            message = dt.create_transaction("foros", json)
-            print('sending {!r}'.format(message))
-            sock.sendall(message)
-
-            # Esperar la respuesta
-            print("Waiting for transaction")
-            amount_received = 0
-            amount_expected = int(sock.recv(5))
-
-            while amount_received < amount_expected:
-                data = sock.recv(amount_expected - amount_received)
-                amount_received += len(data)
-            print("Checking servi answer ...")
-            print('received {!r}'.format(data))
 
         elif opcion == '4':
             # Solicitar datos del foro a actualizar
@@ -536,7 +517,8 @@ def gestion_foros(sock):
                         "id_foro": id_foro,
                         "tipo_foro": tipo_foro,
                         "estado_foro": estado_foro,
-                        "tema_foro": tema_foro
+                        "tema_foro": tema_foro,
+
                  }
             }
 

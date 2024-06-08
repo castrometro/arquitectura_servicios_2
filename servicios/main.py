@@ -9,7 +9,7 @@ def run_user_service():
     subprocess.run(['pipenv', 'run', 'python', 'servicios/user_service.py'])
 
 def run_foro_service():
-    subprocess.run(['pipenv', 'run', 'python', 'servicios/foro_service.py'])
+    subprocess.run(['pipenv', 'run', 'python', 'servicios/foros_services.py'])
 
 def tail_log(log_file):
     with open(log_file, 'r') as f:

@@ -18,7 +18,7 @@ def handle_create_comunidad(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     comunidad = create_comunidad(data['nombre_comunidad'])
-    return json.dumps(comunidad.to_dict())
+    return 'OK'
 
 def handle_get_comunidad(data):
     required_fields = ['id_comunidad']
@@ -40,7 +40,7 @@ def handle_update_comunidad(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     comunidad = update_comunidad(data['id_comunidad'], data['nombre_comunidad'])
-    return json.dumps(comunidad.to_dict())
+    return 'OK'
 
 def handle_delete_comunidad(data):
     required_fields = ['id_comunidad']

@@ -1,4 +1,7 @@
-from modelos import Foro, get_session
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from db.modelos import Foro, get_session
 
 def create_foro(id_comunidad, id_usuario, tipo_foro, estado_foro, tema_foro):
     session = get_session()
@@ -42,12 +45,10 @@ def delete_foro(id_foro):
     finally:
         session.close()
 
-def update_foro(id_foro, id_comunidad, id_usuario, tipo_foro, estado_foro, tema_foro):
+def update_foro(id_foro,tipo_foro, estado_foro, tema_foro):
     session = get_session()
     try:
         foro = session.query(Foro).filter(Foro.id_foro == id_foro).one()
-        foro.id_comunidad = id_comunidad
-        foro.id_usuario = id_usuario
         foro.tipo_foro = tipo_foro
         foro.estado_foro = estado_foro
         foro.tema_foro = tema_foro
