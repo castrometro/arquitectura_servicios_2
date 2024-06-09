@@ -29,7 +29,7 @@ def handle_create_user(data):
         estado_cuenta=data['estado_cuenta'],
         contrasena=data['contrasena']
     )
-    return json.dumps(usuario.to_dict_private())
+    return 'OK'
 
 def handle_get_user(data):
     required_fields = ['id_usuario']
@@ -61,7 +61,7 @@ def handle_update_user(data):
         apellido_materno=data['apellido_materno'],
         estado_cuenta=data['estado_cuenta']
     )
-    return json.dumps(usuario.to_dict())
+    return 'OK'
 
 def handle_delete_user(data):
     required_fields = ['id_usuario']

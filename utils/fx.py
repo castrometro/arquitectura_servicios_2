@@ -274,18 +274,293 @@ def gestion_usuarios(sock):
         else:
             print("Opción no válida. Inténtelo de nuevo.")
 
+def gestion_comunidad(sock):
+    while True:
+        # Menú de opciones para Gestión de Usuarios
+        print("\nSeleccione una operación de Gestión de Comunidad:")
+        print("1. Crear Comunidad")
+        print("2. Ver Comunidad")
+        print("3. Mostrar Comunidades")
+        print("4. Actualizar Comunidad")
+        print("5. Eliminar Comunidad")
+        print("6. Volver al menú principal")
+        
+        opcion = input("Ingrese el número de la operación: ")
+        
+        if opcion == '1':
+            # Solicitar datos de la nueva comunidad
+            comunidad = input("Ingrese el nombre de la nueva comunidad: ")
+            json = {
+                "name_function": "create",
+                 "data": {
+                     "nombre_comunidad": comunidad,
+                 }
+            }
+            message = dt.create_transaction("comun", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
 
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '2':
+            # Solicitar ID de la comunidad a ver
+            comunidad_id = input("Ingrese el ID de la comunidad a ver: ")
+            json = {
+                "name_function": "get",
+                "data": {
+                    "id_comunidad": comunidad_id,
+                }
+            }
+            message = dt.create_transaction("comun", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '3':
+            json = {
+                "name_function": "all",
+                 "data": {
+                     "name": "comunidad",
+                 }
+            }
+            message = dt.create_transaction("comun", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+        
+        elif opcion == '4':
+            # Solicitar datos de la comunidad a actualizar
+            id_comunidad = input("Ingrese el ID de la comunidad a actualizar: ")
+            nombre_comunidad = input("Ingrese el nuevo nombre de la comunidad o '0' para mantener el actual:")
+            if nombre_comunidad == '0':
+                nombre_comunidad = None
+
+            # Transformar datos a DATA del JSON
+            json = {
+                "name_function": "update",
+                 "data": {
+                        "id_comunidad": id_comunidad,
+                        "nombre_comunidad": nombre_comunidad,
+                 }
+            }
+
+            message = dt.create_transaction("comun", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+        
+        elif opcion == '5':
+            # Solicitar ID de la comunidad a eliminar
+            comunidad_id = input("Ingrese el ID de la comunidad a eliminar: ")
+            json = {
+                "name_function": "delete",
+                "data": {
+                    "id_comunidad": comunidad_id,
+                }
+            }
+            message = dt.create_transaction("comun", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+            
+        elif opcion == '6':
+            # Volver al menú principal
+            break
 
 
 def gestion_productos(sock):
-    return 0
-
-
-def gestion_comunidad(sock):
     return 0
 
 def gestion_servicios(sock):
     return 0
 
 def gestion_foros(sock):
-    return 0
+    while True:
+        # Menú de opciones para Gestión de Usuarios
+        print("\nSeleccione una operación de Gestión de Foros:")
+        print("1. Crear Foro")
+        print("2. Ver Foro")
+        print("3. Mostrar Foros")
+        print("4. Actualizar Foro")
+        print("5. Eliminar Foro")
+        print("6. Volver al menú principal")
+        
+        opcion = input("Ingrese el número de la operación: ")
+        
+        if opcion == '1':
+            # Solicitar datos del nuevo foro
+            id_comunidad = input("Ingrese el id de la comunidad del nuevo foro: ")
+            id_usuario = input("Ingrese el id del usuario del nuevo foro: ")
+            tipo_foro = input("Ingrese el tipo del nuevo foro: ")
+            estado_foro = input("Ingrese el estado del nuevo foro: ")
+            tema_foro = input("Ingrese el tema del nuevo foro: ")
+            # Transformar datos a DATA del JSON
+            json = {
+                "name_function": "create",
+                 "data": {
+                        "id_comunidad": id_comunidad,
+                        "id_usuario": id_usuario,
+                        "tipo_foro": tipo_foro,
+                        "estado_foro": estado_foro,
+                        "tema_foro": tema_foro
+                 }
+            }
+
+            message = dt.create_transaction("foros", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '2':
+            # Solicitar ID del foro a ver
+            foro_id = input("Ingrese el ID del foro a ver: ")
+            json = {
+                "name_function": "get",
+                "data": {
+                    "id_foro": foro_id,
+                }
+            }
+            message = dt.create_transaction("foros", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+        
+
+        elif opcion == '4':
+            # Solicitar datos del foro a actualizar
+            id_foro = input("Ingrese el ID del foro a actualizar: ")
+            tipo_foro = input("Ingrese el nuevo tipo del foro o '0' para mantener el actual:")
+            if tipo_foro == '0':
+                tipo_foro = None
+
+            estado_foro = input("Ingrese el nuevo estado del foro o '0' para mantener el actual:")
+            if estado_foro == '0':
+                estado_foro = None
+
+            tema_foro = input("Ingrese el nuevo tema del foro o '0' para mantener el actual:")
+            if tema_foro == '0':
+                tema_foro = None
+
+            # Transformar datos a DATA del JSON
+            json = {
+                "name_function": "update",
+                 "data": {
+                        "id_foro": id_foro,
+                        "tipo_foro": tipo_foro,
+                        "estado_foro": estado_foro,
+                        "tema_foro": tema_foro,
+
+                 }
+            }
+
+            message = dt.create_transaction("foros", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '5':
+            # Solicitar ID del foro a eliminar
+            foro_id = input("Ingrese el ID del foro a eliminar: ")
+            json = {
+                "name_function": "delete",
+                "data": {
+                    "id_foro": foro_id,
+                }
+            }
+            message = dt.create_transaction("foros", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
+
+        elif opcion == '6':
+            # Volver al menú principal
+            break

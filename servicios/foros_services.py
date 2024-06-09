@@ -24,7 +24,7 @@ def handle_create_foro(data):
         estado_foro=data['estado_foro'],
         tema_foro=data['tema_foro']
     )
-    return json.dumps(foro.to_dict())
+    return 'OK'
 
 def handle_get_foro(data):
     required_fields = ['id_foro']
@@ -34,6 +34,9 @@ def handle_get_foro(data):
     
     foro = get_foro(data['id_foro'])
     return json.dumps(foro.to_dict())
+
+# Funcion para ver todos los foros (pdte)
+
 
 def handle_update_foro(data):
     required_fields = ['id_foro', 'tipo_foro', 'estado_foro', 'tema_foro']
@@ -46,8 +49,9 @@ def handle_update_foro(data):
         tipo_foro=data['tipo_foro'],
         estado_foro=data['estado_foro'],
         tema_foro=data['tema_foro']
+
     )
-    return json.dumps(foro.to_dict())
+    return 'OK'
 
 def handle_delete_foro(data):
     required_fields = ['id_foro']

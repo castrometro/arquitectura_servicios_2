@@ -91,6 +91,7 @@ class Usuario(Base):
             'apellido_paterno': self.apellido_paterno,
             'apellido_materno': self.apellido_materno,
             'estado_cuenta': self.estado_cuenta
+            
         }
     
     def to_dict_private(self):
@@ -205,7 +206,7 @@ class ForoMensaje(Base):
 
 def get_session():
     # Configuración de la base de datos
-    DATABASE_URL = os.getenv('DB_CONNECTION_STRING')
+    DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
     engine = create_engine(DATABASE_URL)
 
     # Crear todas las tablas
@@ -219,7 +220,9 @@ def get_session():
 # Comprobar que la variable de entorno se cargue correctamente
 
 # Conexión a la base de datos
-engine = create_engine(os.getenv('DB_CONNECTION_STRING'))
+DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
+print (DATABASE_URL)
+engine = create_engine(DATABASE_URL)
 
 # Base.metadata.drop_all(engine)
 # Crear todas las tablas

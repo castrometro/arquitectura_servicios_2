@@ -8,6 +8,9 @@ def run_comunidad_service():
 def run_user_service():
     subprocess.run(['pipenv', 'run', 'python', 'servicios/user_service.py'])
 
+def run_foro_service():
+    subprocess.run(['pipenv', 'run', 'python', 'servicios/foros_services.py'])
+
 def tail_log(log_file):
     with open(log_file, 'r') as f:
         while True:
@@ -21,10 +24,12 @@ if __name__ == "__main__":
     # Crear procesos
     comunidad_process = multiprocessing.Process(target=run_comunidad_service)
     user_process = multiprocessing.Process(target=run_user_service)
+    foro_process = multiprocessing.Process(target=run_foro_service)
 
     # Iniciar procesos
     comunidad_process.start()
     user_process.start()
+    foro_process.start()
 
     print("Services started. Type 'comunidad' or 'user' to view logs, or 'exit' to quit.")
 
