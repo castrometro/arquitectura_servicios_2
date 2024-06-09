@@ -6,7 +6,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.foros import create_foro, get_foro, update_foro, delete_foro
+from db.foros import create_foro, get_foro, update_foro, delete_foro, get_foros
 
 # Configurar logging
 logging.basicConfig(filename='foro_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -36,7 +36,9 @@ def handle_get_foro(data):
     return json.dumps(foro.to_dict())
 
 # Funcion para ver todos los foros (pdte)
-
+def handle_get_foros(data):
+    foros = get_foros()
+    return json.dumps([foro.to_dict() for foro in foros])
 
 def handle_update_foro(data):
     required_fields = ['id_foro', 'tipo_foro', 'estado_foro', 'tema_foro']
@@ -68,6 +70,8 @@ def process_foro_service(data):
 
     if name_function == 'create':
         return handle_create_foro(data)
+    elif name_function == 'all':
+        return handle_get_foros(data)
     elif name_function == 'get':
         return handle_get_foro(data)
     elif name_function == 'update':

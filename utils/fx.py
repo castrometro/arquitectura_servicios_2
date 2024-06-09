@@ -19,9 +19,9 @@ def gestion_usuarios(sock):
         if opcion == '1':
             json = {
                 "name_function": "all",
-                # "data": {
-                #     "name": "comunidad",
-                # }
+                "data": {
+                     "name": "usuarios",
+                }
             }
             message = dt.create_transaction("suser", json)
             print('sending {!r}'.format(message))
@@ -416,7 +416,6 @@ def gestion_comunidad(sock):
             # Volver al menú principal
             break
 
-
 def gestion_productos(sock):
     return 0
 
@@ -493,7 +492,29 @@ def gestion_foros(sock):
                 amount_received += len(data)
             print("Checking servi answer ...")
             print('received {!r}'.format(data))
-        
+
+        elif opcion == '3':
+            # Solicitar ID del foro a ver
+            json = {
+                "name_function": "all",
+                "data": {
+                    "id_foro": "foros",
+                }
+            }
+            message = dt.create_transaction("foros", json)
+            print('sending {!r}'.format(message))
+            sock.sendall(message)
+
+            # Esperar la respuesta
+            print("Waiting for transaction")
+            amount_received = 0
+            amount_expected = int(sock.recv(5))
+
+            while amount_received < amount_expected:
+                data = sock.recv(amount_expected - amount_received)
+                amount_received += len(data)
+            print("Checking servi answer ...")
+            print('received {!r}'.format(data))
 
         elif opcion == '4':
             # Solicitar datos del foro a actualizar

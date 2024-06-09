@@ -45,8 +45,11 @@ if __name__ == "__main__":
             print("Stopping services...")
             comunidad_process.terminate()
             user_process.terminate()
+            foro_process.terminate()
             comunidad_process.join()
             user_process.join()
+            foro_process.join()
             break
         else:
             print("Unknown command. Type 'comunidad', 'user', or 'exit'.")
+
