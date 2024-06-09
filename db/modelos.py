@@ -78,7 +78,7 @@ class Usuario(Base):
     apellido_paterno = Column(String(50))
     apellido_materno = Column(String(50))
     estado_cuenta = Column(String(50))
-    contrasena = Column(String(50))
+    contrasena = Column(String(255))
     
     def to_dict(self):
         return {
