@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 import os
 
 # Cargar las variables de entorno desde el archivo .env
+
+user_types = ['RESIDENTE', 'CONSERJE', 'ADMINISTRADOR', 'ADMINISTRADOR_SISTEMA']
+
 load_dotenv()
 
 Base = declarative_base()

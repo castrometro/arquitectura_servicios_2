@@ -102,6 +102,30 @@ def handle_register_user(data):
     )
     return json.dumps(usuario.to_dict_private())
 
+def handle_add_admin_user(data):
+    required_fields = ['id_asignador', 'id_usuario', 'id_comunidad']
+    
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+    asignador = get_usuario(data.get('id_asignador'))
+    if( asignador.tipo_usuario == 'ADMINISTRADOR_SISTEMA'):
+        return
+    else:
+        return 'No tiene permisos para realizar esta acción'
+    # usuario = register_usuario(
+    #     rut=data['rut'],
+    #     tipo_usuario=data['tipo_usuario'],
+    #     correo=data['correo'],
+    #     fono=data['fono'],
+    #     nombre=data['nombre'],
+    #     apellido_paterno=data['apellido_paterno'],
+    #     apellido_materno=data['apellido_materno'],
+    #     estado_cuenta=data['estado_cuenta'],
+    #     contrasena=data['contrasena']
+    # )
+    # return json.dumps(usuario.to_dict_private())
+
 def process_user_service(data):
     name_function = data['name_function']
     data = data['data']
