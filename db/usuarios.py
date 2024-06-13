@@ -85,9 +85,9 @@ def login_usuario(rut, contrasena, estado_cuenta):
             if usuario.estado_cuenta != 'pendiente':
                 return usuario
             else:
-                return {'error': 'Usuario pendiente de aprobación'}
+                return {'error': 'Usuario pendiente de aprobacion'}
         else:
-            return {'error': 'Credenciales inválidas'}
+            return {'error': 'Credenciales invalidas'}
     finally:
         session.close()
 
