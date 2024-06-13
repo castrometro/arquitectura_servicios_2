@@ -82,9 +82,13 @@ def login_usuario(rut, contrasena):
     try:
         usuario = session.query(Usuario).filter(Usuario.rut == rut).one()
         if bcrypt.checkpw(contrasena.encode('utf-8'), usuario.contrasena.encode('utf-8')):
-            return usuario
+            if usuario.estado_cuenta != 'pendiente':
+                log_audit('login', usuario.id_usuario, 'Usuario inició sesión')
+                return usuario
+            else:
+                return {'error': 'Usuario pendiente de aprobación'}
         else:
-            return None
+            return {'error': 'Credenciales inválidas'}
     finally:
         session.close()
 
