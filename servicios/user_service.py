@@ -79,9 +79,9 @@ def handle_login_user(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     usuario = login_usuario(rut=data['rut'], contrasena=data['contrasena'])
-    if usuario:
-        return json.dumps(usuario.to_dict_private())
-    return json.dumps({'error': 'Invalid credentials'})
+    if isinstance(usuario, dict) and 'error' in usuario:
+        return json.dumps(usuario)
+    return json.dumps(usuario.to_dict_private())
 
 def handle_register_user(data):
     required_fields = ['rut', 'tipo_usuario', 'correo', 'fono', 'nombre', 'apellido_paterno', 'apellido_materno', 'estado_cuenta', 'contrasena']
