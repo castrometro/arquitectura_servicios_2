@@ -3,7 +3,21 @@ import os
 import bcrypt
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from db.modelos import Usuario, get_session
+from db.modelos import Usuario, get_session, Auditoria
+
+def log_audit(action, user_id, description):
+    session = get_session()
+    try:
+        audit_entry = Auditoria(
+            fecha=datetime.now(),
+            accion=action,
+            usuario_id=user_id,
+            descripcion=description
+        )
+        session.add(audit_entry)
+        session.commit()
+    finally:
+        session.close()
 
 def create_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
     session = get_session()
