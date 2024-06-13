@@ -7,6 +7,8 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 import utils.bus as bus
 from db.foros import create_foro, get_foro, update_foro, delete_foro, get_foros
+from db.usuarios import get_usuario # para verificar luego si es admin o no
+from db.comunidad import get_comunidad # para ver la comunidad a que pertenece el usuario
 
 # Configurar logging
 logging.basicConfig(filename='foro_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -16,6 +18,15 @@ def handle_create_foro(data):
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+
+    # Obtener usuario y verificar si es administrador de la comunidad
+    usuario = get_usuario(data['id_usuario'])
+    if usuario.tipo_usuario != 'admin':
+        return json.dumps({'error': 'Usuario no autorizado para crear foros'})
+    
+    comunidad = get_comunidad(data['id_comunidad'])
+    if comunidad.id_usuario != data['id_usuario']:
+        return json.dumps({'error': 'El usuario no es administrador de esta comunidad'})
     
     foro = create_foro(
         id_comunidad=data['id_comunidad'],
