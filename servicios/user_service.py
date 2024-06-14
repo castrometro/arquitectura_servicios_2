@@ -84,7 +84,7 @@ def handle_login_user(data):
     return json.dumps(usuario.to_dict_private())
 
 def handle_register_user(data):
-    required_fields = ['rut', 'tipo_usuario', 'correo', 'fono', 'nombre', 'apellido_paterno', 'apellido_materno', 'estado_cuenta', 'contrasena']
+    required_fields = ['rut', 'tipo_usuario', 'correo', 'fono', 'nombre', 'apellido_paterno', 'apellido_materno', 'contrasena']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
@@ -97,7 +97,6 @@ def handle_register_user(data):
         nombre=data['nombre'],
         apellido_paterno=data['apellido_paterno'],
         apellido_materno=data['apellido_materno'],
-        estado_cuenta=data['estado_cuenta'],
         contrasena=data['contrasena']
     )
     return json.dumps(usuario.to_dict_private())
