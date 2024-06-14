@@ -80,7 +80,7 @@ class Usuario(Base):
     nombre = Column(String(50))
     apellido_paterno = Column(String(50))
     apellido_materno = Column(String(50))
-    estado_cuenta = Column(String(50))
+    estado_cuenta = Column(String(50), default = 'pendiente') # estado predeterminado
     contrasena = Column(String(255))
     
     def to_dict(self):
