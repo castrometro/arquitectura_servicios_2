@@ -92,4 +92,6 @@ def login_usuario(rut, contrasena, estado_cuenta):
         session.close()
 
 def register_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
+    # estado de cuenta predeterminado como "pendiente"
+    estado_cuenta = 'pendiente'
     return create_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena)
