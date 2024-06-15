@@ -79,7 +79,7 @@ def handle_login_user(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     usuario = login_usuario(rut=data['rut'], contrasena=data['contrasena'])
-    if isinstance(usuario, dict) and 'error' in usuario:
+    if isinstance(usuario, dict) and ('error' in usuario):
         return json.dumps(usuario)
     return json.dumps(usuario.to_dict_private())
 

@@ -1,6 +1,7 @@
 import sys
 import os
 import bcrypt
+from sqlalchemy.orm.exc import NoResultFound
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from db.modelos import Usuario, get_session
@@ -77,10 +78,14 @@ def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido
     finally:
         session.close()
 
-def login_usuario(rut, contrasena, estado_cuenta):
+def login_usuario(rut, contrasena):
     session = get_session()
     try:
-        usuario = session.query(Usuario).filter(Usuario.rut == rut).one()
+        try:
+            usuario = session.query(Usuario).filter(Usuario.rut == rut).one()
+        except NoResultFound:
+            return {'error': 'Usuario no encontrado'}
+        # Ver si el usuario existe
         if bcrypt.checkpw(contrasena.encode('utf-8'), usuario.contrasena.encode('utf-8')):
             if usuario.estado_cuenta != 'pendiente':
                 return usuario
@@ -90,6 +95,7 @@ def login_usuario(rut, contrasena, estado_cuenta):
             return {'error': 'Credenciales invalidas'}
     finally:
         session.close()
+
 
 def register_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
     # estado de cuenta predeterminado como "pendiente"
