@@ -32,6 +32,8 @@ def get_usuario(id_usuario):
     try:
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
         return usuario
+    except NoResultFound:
+        return {'error': 'Usuario no encontrado'}
     finally:
         session.close()
 
@@ -43,11 +45,24 @@ def get_usuarios():
     finally:
         session.close()
 
+def get_usuario_by_id(id):
+    session = get_session()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.id_usuario == id).one()
+        return True
+    except NoResultFound:
+            return False
+    finally:
+        session.close()
+
+
 def get_usuario_by_rut(rut):
     session = get_session()
     try:
         usuario = session.query(Usuario).filter(Usuario.rut == rut).one()
         return usuario
+    except NoResultFound:
+            return {'error': 'Usuario no encontrado'}
     finally:
         session.close()
 
@@ -58,25 +73,43 @@ def delete_usuario(id_usuario):
         session.delete(usuario)
         session.commit()
         return usuario
+    except NoResultFound:
+            return {'error': 'Usuario no encontrado'}
     finally:
         session.close()
+
 
 def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta):
     session = get_session()
     try:
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
-        usuario.rut = rut
-        usuario.tipo_usuario = tipo_usuario
-        usuario.correo = correo
-        usuario.fono = fono
-        usuario.nombre = nombre
-        usuario.apellido_paterno = apellido_paterno
-        usuario.apellido_materno = apellido_materno
-        usuario.estado_cuenta = estado_cuenta
+        
+        # Solo actualizar los campos que no son 0
+        if rut != 0:
+            usuario.rut = rut
+        if tipo_usuario != 0:
+            usuario.tipo_usuario = tipo_usuario
+        if correo != 0:
+            usuario.correo = correo
+        if fono != 0:
+            usuario.fono = fono
+        if nombre != 0:
+            usuario.nombre = nombre
+        if apellido_paterno != 0:
+            usuario.apellido_paterno = apellido_paterno
+        if apellido_materno != 0:
+            usuario.apellido_materno = apellido_materno
+        if estado_cuenta != 0:
+            usuario.estado_cuenta = estado_cuenta
+        
         session.commit()
         return usuario
+    except NoResultFound:
+        return {'error': 'Usuario no encontrado'}
     finally:
         session.close()
+
+
 
 def login_usuario(rut, contrasena):
     session = get_session()

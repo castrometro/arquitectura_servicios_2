@@ -20,7 +20,7 @@ def connect_to_bus():
 def menu_inicio():
     print("Bienvenido al sistema de gestión de comunidad.")
     print("Por favor, inicie sesión para continuar.")
-    print("Conectando al servicio Login...")
+    print("Conectando al bus....")
     sock = connect_to_bus()
     try:
         data = cliente_login(sock)

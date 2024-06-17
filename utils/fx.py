@@ -98,57 +98,52 @@ def gestion_usuarios(sock, data_usuario):
         elif opcion == '2':
             # Solicitar datos del usuario a actualizar
             id_usuario = input("Ingrese el ID del usuario a actualizar: ")
-            # Solicitar datos a modificar
-            rut_usuario = input("Ingrese el nuevo rut del usuario o '0' para mantener el actual:")
-            if rut_usuario == '0':
-                rut_usuario = None
-
-            tipo_usuario = input("Ingrese el nuevo tipo del usuario o '0' para mantener el actual:")
-            if tipo_usuario == '0':
-                tipo_usuario = None
-
-            correo = input("Ingrese el nuevo email del usuario o '0' para mantener el actual:")
-            if correo == '0':
-                correo = None
-
-            fono = input("Ingrese el nuevo fono del usuario o '0' para mantener el actual:")
-            if fono == '0':
-                fono = None
-
-            nombre = input("Ingrese el nuevo nombre del usuario o '0' para mantener el actual:")
-            if nombre == '0':
-                nombre = None
-
-            apellido_paterno = input("Ingrese el nuevo apellido paterno del usuario o '0' para mantener el actual:")
-            if apellido_paterno == '0':
-                apellido_paterno = None
-
-            apellido_materno = input("Ingrese el nuevo apellido materno del usuario o '0' para mantener el actual:")
-            if apellido_materno == '0':
-                apellido_materno = None
-
-            estado_cuenta = input("Ingrese el nuevo estado de cuenta del usuario o '0' para mantener el actual:")
-            if estado_cuenta == '0':
-                estado_cuenta = None
-
-
-            # Transformar datos a DATA del JSON
             json = {
-                "name_function": "update",
-                 "data": {
-                        "id_usuario": id_usuario,
-                        "rut": rut_usuario,
-                        "tipo_usuario": tipo_usuario,
-                        "correo": correo,
-                        "fono": fono,
-                        "nombre": nombre,
-                        "apellido_paterno": apellido_paterno,
-                        "apellido_materno": apellido_materno,
-                        "estado_cuenta": estado_cuenta
-                 }
+                "name_function": "get",
+                "data": {
+                    "id_usuario": id_usuario
+                }
             }
-            transaction(sock, "suser", json)
-           
+            if 'error' not in transaction(sock,clase,json):
+                    # Solicitar datos a modificar
+                    print('Usuario Encontrado')
+                    rut_usuario = input("Ingrese el nuevo rut del usuario o '0' para mantener el actual:")
+
+                    tipo_usuario = input("Ingrese el nuevo tipo del usuario o '0' para mantener el actual:")
+
+                    correo = input("Ingrese el nuevo email del usuario o '0' para mantener el actual:")
+
+                    fono = input("Ingrese el nuevo fono del usuario o '0' para mantener el actual:")
+
+                    nombre = input("Ingrese el nuevo nombre del usuario o '0' para mantener el actual:")
+
+                    apellido_paterno = input("Ingrese el nuevo apellido paterno del usuario o '0' para mantener el actual:")
+
+                    apellido_materno = input("Ingrese el nuevo apellido materno del usuario o '0' para mantener el actual:")
+
+                    estado_cuenta = input("Ingrese el nuevo estado de cuenta del usuario o '0' para mantener el actual:")
+
+
+
+                    # Transformar datos a DATA del JSON
+                    json = {
+                        "name_function": "update",
+                        "data": {
+                                "id_usuario": id_usuario,
+                                "rut": rut_usuario,
+                                "tipo_usuario": tipo_usuario,
+                                "correo": correo,
+                                "fono": fono,
+                                "nombre": nombre,
+                                "apellido_paterno": apellido_paterno,
+                                "apellido_materno": apellido_materno,
+                                "estado_cuenta": estado_cuenta
+                        }
+                    }
+                    transaction(sock, "suser", json)
+            else:
+                    print('Usuario No existe')
+                
         elif opcion == '3':
             # Solicitar ID del usuario a eliminar
             user_id = input("Ingrese el ID del usuario a eliminar: ")

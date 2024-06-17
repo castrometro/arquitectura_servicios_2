@@ -7,7 +7,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.usuarios import create_usuario, get_usuario, get_usuarios, get_usuario_by_rut, delete_usuario, update_usuario, login_usuario, register_usuario
+from db.usuarios import *
 
 # Configurar logging
 logging.basicConfig(filename='user_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -38,7 +38,11 @@ def handle_get_user(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     usuario = get_usuario(data['id_usuario'])
-    return json.dumps(usuario.to_dict())
+
+    if isinstance(usuario, dict) and 'error' in usuario:
+        return json.dumps(usuario)
+    else:
+        return json.dumps(usuario.to_dict())
 
 def handle_get_all_users(data):
     usuarios = get_usuarios()
@@ -61,7 +65,7 @@ def handle_update_user(data):
         apellido_materno=data['apellido_materno'],
         estado_cuenta=data['estado_cuenta']
     )
-    return 'OK'
+    return json.dumps(usuario.to_dict())
 
 def handle_delete_user(data):
     required_fields = ['id_usuario']
@@ -124,6 +128,8 @@ def handle_add_admin_user(data):
     #     contrasena=data['contrasena']
     # )
     # return json.dumps(usuario.to_dict_private())
+
+
 
 def process_user_service(data):
     name_function = data['name_function']
