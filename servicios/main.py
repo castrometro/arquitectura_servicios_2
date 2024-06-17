@@ -51,7 +51,7 @@ if __name__ == "__main__":
             comunidad_process.terminate()
             user_process.terminate()
             foro_process.terminate()
-             msn_process.terminate()
+            msn_process.terminate()
             comunidad_process.join()
             user_process.join()
             foro_process.join()
