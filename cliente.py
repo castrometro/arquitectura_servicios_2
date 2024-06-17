@@ -59,6 +59,7 @@ def main_menu(data_usuario, tipo_usuario, sock):
     opciones_residente = {
         '1': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
+        '3': {'nombre': 'Publicar un mensaje en el foro': gestion_msn}
     }
 
     opciones_conserje = {
