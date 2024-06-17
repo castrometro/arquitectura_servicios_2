@@ -219,6 +219,22 @@ def get_session():
     Session = sessionmaker(bind=engine)
     """Crea y retorna una nueva sesión."""
     return Session()
+    
+def get_foro(id_foro):
+    session = get_session()
+    try:
+        foro = session.query(Foro).filter(Foro.id_foro == id_foro).one_or_none()
+        return foro
+    finally:
+        session.close()
+
+def get_user(id_usuario):
+    session = get_session()
+    try:
+        user = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
+        return user
+    finally:
+        session.close()
 
 # Comprobar que la variable de entorno se cargue correctamente
 
