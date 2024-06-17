@@ -18,7 +18,7 @@ def handle_create_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    usuario = create_usuario(
+    create_usuario(
         rut=data['rut'],
         tipo_usuario=data['tipo_usuario'],
         correo=data['correo'],
@@ -29,7 +29,12 @@ def handle_create_user(data):
         estado_cuenta=data['estado_cuenta'],
         contrasena=data['contrasena']
     )
-    return 'OK'
+    usuario = get_usuario_by_rut(data['rut'])
+
+    if isinstance(usuario, dict) and 'error' in usuario:
+        return json.dumps(usuario)
+    else:
+        return json.dumps(usuario.to_dict())
 
 def handle_get_user(data):
     required_fields = ['id_usuario']
@@ -54,7 +59,7 @@ def handle_update_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    usuario = update_usuario(
+    update_usuario(
         id_usuario=data['id_usuario'],
         rut=data['rut'],
         tipo_usuario=data['tipo_usuario'],
@@ -65,7 +70,12 @@ def handle_update_user(data):
         apellido_materno=data['apellido_materno'],
         estado_cuenta=data['estado_cuenta']
     )
-    return json.dumps(usuario.to_dict())
+    usuario = get_usuario(data['id_usuario'])
+
+    if isinstance(usuario, dict) and 'error' in usuario:
+        return json.dumps(usuario)
+    else:
+        return json.dumps(usuario.to_dict())
 
 def handle_delete_user(data):
     required_fields = ['id_usuario']
@@ -73,8 +83,14 @@ def handle_delete_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    usuario = delete_usuario(data['id_usuario'])
-    return json.dumps(usuario.to_dict())
+    delete_usuario(data['id_usuario'])
+
+    usuario = get_usuario(data['id_usuario'])
+
+    if isinstance(usuario, dict) and 'error' in usuario:
+        return json.dumps(usuario)
+    else:
+        return json.dumps(usuario.to_dict())
 
 def handle_login_user(data):
     required_fields = ['rut', 'contrasena']

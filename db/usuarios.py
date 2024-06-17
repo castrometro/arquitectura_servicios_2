@@ -42,13 +42,15 @@ def get_usuarios():
     try:
         usuarios = session.query(Usuario).all()
         return usuarios
+    except NoResultFound:
+        return {'error': 'No hay usuarios'}
     finally:
         session.close()
 
 def get_usuario_by_id(id):
     session = get_session()
     try:
-        usuario = session.query(Usuario).filter(Usuario.id_usuario == id).one()
+        session.query(Usuario).filter(Usuario.id_usuario == id).one()
         return True
     except NoResultFound:
             return False
@@ -85,21 +87,21 @@ def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
         
         # Solo actualizar los campos que no son 0
-        if rut != 0:
+        if rut != '0':
             usuario.rut = rut
-        if tipo_usuario != 0:
+        if tipo_usuario != '0':
             usuario.tipo_usuario = tipo_usuario
-        if correo != 0:
+        if correo != '0':
             usuario.correo = correo
-        if fono != 0:
+        if fono != '0':
             usuario.fono = fono
-        if nombre != 0:
+        if nombre != '0':
             usuario.nombre = nombre
-        if apellido_paterno != 0:
+        if apellido_paterno != '0':
             usuario.apellido_paterno = apellido_paterno
-        if apellido_materno != 0:
+        if apellido_materno != '0':
             usuario.apellido_materno = apellido_materno
-        if estado_cuenta != 0:
+        if estado_cuenta != '0':
             usuario.estado_cuenta = estado_cuenta
         
         session.commit()

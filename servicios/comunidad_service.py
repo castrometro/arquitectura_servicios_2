@@ -6,7 +6,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.comunidad import create_comunidad, get_comunidades, get_comunidad, update_comunidad, delete_comunidad
+from db.comunidad import *
 
 # Configurar logging
 logging.basicConfig(filename='comunidad_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -17,8 +17,12 @@ def handle_create_comunidad(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    comunidad = create_comunidad(data['nombre_comunidad'])
-    return 'OK'
+    create_comunidad(data['nombre_comunidad'])
+    comunidad = get_comunidad_by_nombre(data['nombre_comunidad'])
+    if isinstance(comunidad, dict) and 'error' in comunidad:
+        return json.dumps(comunidad)
+    else:
+        return json.dumps(comunidad.to_dict())
 
 def handle_get_comunidad(data):
     required_fields = ['id_comunidad']
@@ -27,7 +31,10 @@ def handle_get_comunidad(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     comunidad = get_comunidad(data['id_comunidad'])
-    return json.dumps(comunidad.to_dict())
+    if isinstance(comunidad, dict) and 'error' in comunidad:
+        return json.dumps(comunidad)
+    else:
+        return json.dumps(comunidad.to_dict())
 
 def handle_get_all_comunidades(data):
     comunidades = get_comunidades()
@@ -39,17 +46,29 @@ def handle_update_comunidad(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    comunidad = update_comunidad(data['id_comunidad'], data['nombre_comunidad'])
-    return 'OK'
+    update_comunidad(data['id_comunidad'], data['nombre_comunidad'])
+    print ('------')
+    print (data['id_comunidad'], data['nombre_comunidad'])
+    print ('------')
+    comunidad = get_comunidad(data['id_comunidad'])
+
+    if isinstance(comunidad, dict) and 'error' in comunidad:
+        return json.dumps(comunidad)
+    else:
+        return json.dumps(comunidad.to_dict())
 
 def handle_delete_comunidad(data):
     required_fields = ['id_comunidad']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
-    
-    comunidad = delete_comunidad(data['id_comunidad'])
-    return json.dumps(comunidad.to_dict())
+    delete_comunidad(data['id_comunidad'])
+    comunidad = get_comunidad(data['id_comunidad'])
+    if isinstance(comunidad, dict) and 'error' in comunidad:
+        return json.dumps(comunidad)
+    else:
+        return json.dumps(comunidad.to_dict())
+
 
 def process_comunidad_service(data):
     name_function = data['name_function']

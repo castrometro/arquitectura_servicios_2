@@ -6,7 +6,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.foros import create_foro, get_foro, update_foro, delete_foro, get_foros
+from db.foros import *
 from db.usuarios import get_usuario # para verificar luego si es admin o no
 from db.comunidad import get_comunidad # para ver la comunidad a que pertenece el usuario
 
@@ -19,23 +19,27 @@ def handle_create_foro(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
 
-    # Obtener usuario y verificar si es administrador de la comunidad
-    usuario = get_usuario(data['id_usuario'])
-    if usuario.tipo_usuario != 'admin':
-        return json.dumps({'error': 'Usuario no autorizado para crear foros'})
+    # # Obtener usuario y verificar si es administrador de la comunidad
+    # usuario = get_usuario(data['id_usuario'])
+    # if usuario.tipo_usuario != 'admin':
+    #     return json.dumps({'error': 'Usuario no autorizado para crear foros'})
     
-    comunidad = get_comunidad(data['id_comunidad'])
-    if comunidad.id_usuario != data['id_usuario']:
-        return json.dumps({'error': 'El usuario no es administrador de esta comunidad'})
+    # comunidad = get_comunidad(data['id_comunidad'])
+    # if comunidad.id_usuario != data['id_usuario']:
+    #     return json.dumps({'error': 'El usuario no es administrador de esta comunidad'})
     
-    foro = create_foro(
+    create_foro(
         id_comunidad=data['id_comunidad'],
         id_usuario=data['id_usuario'],
         tipo_foro=data['tipo_foro'],
         estado_foro=data['estado_foro'],
         tema_foro=data['tema_foro']
     )
-    return 'OK'
+    foro = get_foro_by_all_not_id(data)
+    if isinstance(foro, dict) and 'error' in foro:
+        return json.dumps(foro)
+    else:
+        return json.dumps(foro.to_dict())
 
 def handle_get_foro(data):
     required_fields = ['id_foro']
@@ -57,14 +61,17 @@ def handle_update_foro(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    foro = update_foro(
+    update_foro(
         id_foro=data['id_foro'],
         tipo_foro=data['tipo_foro'],
         estado_foro=data['estado_foro'],
         tema_foro=data['tema_foro']
-
     )
-    return 'OK'
+    foro = get_foro(data['id_foro'])
+    if isinstance(foro, dict) and 'error' in foro:
+        return json.dumps(foro)
+    else:
+        return json.dumps(foro.to_dict())
 
 def handle_delete_foro(data):
     required_fields = ['id_foro']
@@ -72,8 +79,13 @@ def handle_delete_foro(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    foro = delete_foro(data['id_foro'])
-    return json.dumps(foro.to_dict())
+    delete_foro(data['id_foro'])
+    foro = get_foro(data['id_foro'])
+    if isinstance(foro, dict) and 'error' in foro:
+        return json.dumps(foro)
+    else:
+        return json.dumps(foro.to_dict())
+    
 
 def process_foro_service(data):
     name_function = data['name_function']
