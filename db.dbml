@@ -1,0 +1,168 @@
+Table departamento {
+    id_departamento int [pk]
+    id_comunidad int [ref: > comunidad.id_comunidad]
+    numero varchar(50)
+    id_usuario_propietario int [ref: > usuario.id_usuario]
+}
+
+Table comunidad {
+    id_comunidad int [pk]
+    nombre_comunidad varchar(50)
+}
+
+Table usuario_departamento {
+    id_usuario_departamento int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_departamento int [ref: > departamento.id_departamento]
+}
+
+Table foro {
+    id_foro int [pk]
+    id_comunidad int [ref: > comunidad.id_comunidad]
+    id_usuario int [ref: > usuario.id_usuario]
+    tipo_foro varchar(50)
+    estado_foro varchar(50)
+    tema_foro varchar(50)
+}
+
+Table usuario {
+    id_usuario int [pk, increment]
+    rut varchar(50)
+    tipo_usuario varchar(50)
+    correo varchar(100)
+    fono varchar(20)
+    nombre varchar(50)
+    apellido_paterno varchar(50)
+    apellido_materno varchar(50)
+    estado_cuenta varchar(50) [default: 'pendiente']
+    contrasena varchar(255)
+}
+
+Table chat {
+    id_chat int [pk]
+    id_usuario_remitente int [ref: > usuario.id_usuario]
+    id_usuario_receptor int [ref: > usuario.id_usuario]
+    fecha_chat datetime
+}
+
+Table chat_mensaje {
+    id_chat_mensaje int [pk]
+    contenido text
+    archivo varchar(100)
+    id_usuario int [ref: > usuario.id_usuario]
+    id_chat int [ref: > chat.id_chat]
+    fecha_mensaje datetime
+}
+
+Table notificacion {
+    id_notificacion int [pk]
+    fecha datetime
+    hora datetime
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+}
+
+Table usuario_suspendido {
+    id_usuario_suspendido int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+    duracion int
+    fecha_moderacion datetime
+    estado varchar(50)
+    razon varchar(250)
+}
+
+Table foro_mensaje {
+    id_foro_mensaje int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+    fecha datetime
+    hora datetime
+    contenido text
+    archivo varchar(100)
+    estado varchar(50)
+}
+Table departamento {
+    id_departamento int [pk]
+    id_comunidad int [ref: > comunidad.id_comunidad]
+    numero varchar(50)
+    id_usuario_propietario int [ref: > usuario.id_usuario]
+}
+
+Table comunidad {
+    id_comunidad int [pk]
+    nombre_comunidad varchar(50)
+}
+
+Table usuario_departamento {
+    id_usuario_departamento int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_departamento int [ref: > departamento.id_departamento]
+}
+
+Table foro {
+    id_foro int [pk]
+    id_comunidad int [ref: > comunidad.id_comunidad]
+    id_usuario int [ref: > usuario.id_usuario]
+    tipo_foro varchar(50)
+    estado_foro varchar(50)
+    tema_foro varchar(50)
+}
+
+Table usuario {
+    id_usuario int [pk, increment]
+    rut varchar(50)
+    tipo_usuario varchar(50)
+    correo varchar(100)
+    fono varchar(20)
+    nombre varchar(50)
+    apellido_paterno varchar(50)
+    apellido_materno varchar(50)
+    estado_cuenta varchar(50) [default: 'pendiente']
+    contrasena varchar(255)
+}
+
+Table chat {
+    id_chat int [pk]
+    id_usuario_remitente int [ref: > usuario.id_usuario]
+    id_usuario_receptor int [ref: > usuario.id_usuario]
+    fecha_chat datetime
+}
+
+Table chat_mensaje {
+    id_chat_mensaje int [pk]
+    contenido text
+    archivo varchar(100)
+    id_usuario int [ref: > usuario.id_usuario]
+    id_chat int [ref: > chat.id_chat]
+    fecha_mensaje datetime
+}
+
+Table notificacion {
+    id_notificacion int [pk]
+    fecha datetime
+    hora datetime
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+}
+
+Table usuario_suspendido {
+    id_usuario_suspendido int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+    duracion int
+    fecha_moderacion datetime
+    estado varchar(50)
+    razon varchar(250)
+}
+
+Table foro_mensaje {
+    id_foro_mensaje int [pk]
+    id_usuario int [ref: > usuario.id_usuario]
+    id_foro int [ref: > foro.id_foro]
+    fecha datetime
+    hora datetime
+    contenido text
+    archivo varchar(100)
+    estado varchar(50)
+}
