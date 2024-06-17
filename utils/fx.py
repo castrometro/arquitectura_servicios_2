@@ -462,3 +462,29 @@ def gestion_productos(sock, data_usuario):
 
 def gestion_servicios(sock, data_usuario):
     return 0
+
+def gestion_msn(sock):
+    id_usuario = input("Ingrese su ID de usuario:")
+    id_foro = input("Ingrese el ID del foro:")
+    contenido = input("Ingrese el contenido del mensaje:")
+    json_data = {
+        "name_function": "create_message",
+        "data": {
+            "id_usuario": id_usuario,
+            "id_foro": id_foro,
+            "contenido": contenido
+        }
+    }
+    message = dt.create_transaction("msngr", json_data)
+    print('sending {!r}'.format(message))
+    sock.sendall(message)
+
+    print("Waiting for transaction")
+    amount_received = 0
+    amount_expected = int(sock.recv(5))
+
+    while amount_received < amount_expected:
+        data = sock.recv(amount_expected - amount_received)
+        amount_received += len(data)
+    print("Checking servi answer ...")
+    print('received {!r}'.format(data))
