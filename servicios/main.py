@@ -11,6 +11,9 @@ def run_user_service():
 def run_foro_service():
     subprocess.run(['pipenv', 'run', 'python', 'servicios/foros_services.py'])
 
+def run_mensajeria_service():
+    subprocess.run(['pipenv', 'run', 'python', 'servicios/mensajeria_service.py'])
+
 def tail_log(log_file):
     with open(log_file, 'r') as f:
         while True:
@@ -25,11 +28,13 @@ if __name__ == "__main__":
     comunidad_process = multiprocessing.Process(target=run_comunidad_service)
     user_process = multiprocessing.Process(target=run_user_service)
     foro_process = multiprocessing.Process(target=run_foro_service)
+    msn_process = multiprocessing.Process(target=run_mensajeria_service)
 
     # Iniciar procesos
     comunidad_process.start()
     user_process.start()
     foro_process.start()
+    msn_process.start()
 
     print("Services started. Type 'comunidad' or 'user' to view logs, or 'exit' to quit.")
 
@@ -46,9 +51,11 @@ if __name__ == "__main__":
             comunidad_process.terminate()
             user_process.terminate()
             foro_process.terminate()
+             msn_process.terminate()
             comunidad_process.join()
             user_process.join()
             foro_process.join()
+            msn_process.join()
             break
         else:
             print("Unknown command. Type 'comunidad', 'user', or 'exit'.")
