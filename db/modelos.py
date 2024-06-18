@@ -240,7 +240,6 @@ def get_user(id_usuario):
 
 # Conexión a la base de datos
 DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
-print (DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 
 # Base.metadata.drop_all(engine)
