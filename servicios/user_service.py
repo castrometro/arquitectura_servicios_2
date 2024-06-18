@@ -132,18 +132,6 @@ def handle_add_admin_user(data):
         return
     else:
         return 'No tiene permisos para realizar esta acción'
-    # usuario = register_usuario(
-    #     rut=data['rut'],
-    #     tipo_usuario=data['tipo_usuario'],
-    #     correo=data['correo'],
-    #     fono=data['fono'],
-    #     nombre=data['nombre'],
-    #     apellido_paterno=data['apellido_paterno'],
-    #     apellido_materno=data['apellido_materno'],
-    #     estado_cuenta=data['estado_cuenta'],
-    #     contrasena=data['contrasena']
-    # )
-    # return json.dumps(usuario.to_dict_private())
 
 
 
