@@ -101,6 +101,7 @@ class Usuario(Base):
     apellido_materno = Column(String(50))
     estado_cuenta = Column(String(50), default = 'pendiente') # estado predeterminado
     contrasena = Column(String(255))
+    privacidad = Column(String(10), default='publica')  # Nueva columna para la privacidad
     
     def to_dict(self):
         return {
@@ -112,8 +113,8 @@ class Usuario(Base):
             'nombre': self.nombre,
             'apellido_paterno': self.apellido_paterno,
             'apellido_materno': self.apellido_materno,
-            'estado_cuenta': self.estado_cuenta
-            
+            'estado_cuenta': self.estado_cuenta,
+            'privacidad': self.privacidad
         }
     
     def to_dict_private(self):
@@ -127,7 +128,8 @@ class Usuario(Base):
             'apellido_paterno': self.apellido_paterno,
             'apellido_materno': self.apellido_materno,
             'estado_cuenta': self.estado_cuenta,
-            'contrasena': self.contrasena
+            'contrasena': self.contrasena,
+            'privacidad': self.privacidad
         }
 
 class Chat(Base):
