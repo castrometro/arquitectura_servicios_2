@@ -5,10 +5,29 @@ from dotenv import load_dotenv
 import os
 
 # Cargar las variables de entorno desde el archivo .env
+load_dotenv('C:/Users/David/Documents/Github/arquitectura_servicios/.env')
+
+# Obtener las variables de entorno
+DB_USER = 'finflow'
+DB_PASSWORD = 'finflow'
+DB_HOST = 'localhost'
+DB_PORT = 5432
+DB_NAME = 'arquitectura_servicios'
+
+
+
+# Verificar que las variables de entorno se han cargado correctamente
+if not all([DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]):
+    raise Exception("Faltan variables de entorno requeridas")
+
+print("Variables de entorno cargadas:")
+print("DB_USER:", DB_USER)
+print("DB_PASSWORD:", DB_PASSWORD)
+print("DB_HOST:", DB_HOST)
+print("DB_PORT:", DB_PORT)
+print("DB_NAME:", DB_NAME)
 
 user_types = ['RESIDENTE', 'CONSERJE', 'ADMINISTRADOR', 'ADMINISTRADOR_SISTEMA']
-
-load_dotenv()
 
 Base = declarative_base()
 
@@ -206,10 +225,9 @@ class ForoMensaje(Base):
             'estado': self.estado
         }
 
-
 def get_session():
     # Configuración de la base de datos
-    DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
+    DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     engine = create_engine(DATABASE_URL)
 
     # Crear todas las tablas
@@ -237,12 +255,10 @@ def get_user(id_usuario):
         session.close()
 
 # Comprobar que la variable de entorno se cargue correctamente
-
-# Conexión a la base de datos
-DATABASE_URL = 'postgresql://postgres:mysecretpassword@localhost:5432/arquitectura_servicios'
+DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+print(DATABASE_URL)
 engine = create_engine(DATABASE_URL)
 
-# Base.metadata.drop_all(engine)
 # Crear todas las tablas
 Base.metadata.create_all(engine)
 

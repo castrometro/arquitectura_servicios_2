@@ -14,7 +14,7 @@ DEFAULT_CONFIG_MAILER = {
     'port': 465,
     'secure': True,
     'auth': {
-        'user': "comprobantes@proliftingenieria.cl",
+        'user': "servicios@proliftingenieria.cl",
         'pass': "v10l3t488@V",
     },
 }

@@ -23,7 +23,9 @@ def menu_inicio():
     print("Conectando al bus....")
     sock = connect_to_bus()
     try:
+
         data = cliente_login(sock)
+        print(data)
         if 'error' in data:
             print(data['error'], 'intentelo denuevo')
             sleep(2)
@@ -37,6 +39,8 @@ def menu_inicio():
     finally:
         print('closing socket')
         sock.close()
+    # main_menu(data_usuario,data_usuario['tipo_usuario'],sock)
+
 
 
 

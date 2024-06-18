@@ -2,11 +2,22 @@ import socket
 import sys
 import os
 import json
+import signal
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import utils.data_transaction as dt
 
+# Manejar la interrupción del teclado (Ctrl+C)
+def signal_handler(sig, frame):
+    print('Interrupción del teclado recibida. Cerrando el socket y saliendo...')
+    if 'sock' in globals():
+        sock.close()
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
 def run_service(process_data, name_service):
+    global sock  # Declarar el socket como global para acceder a él en el manejador de señales
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     # Conectar el socket al puerto donde el bus está escuchando
@@ -64,7 +75,15 @@ def run_service(process_data, name_service):
                 except json.JSONDecodeError as e:
                     print(f'Error decoding JSON: {e}')
                     # Manejar el error, por ejemplo, enviar una respuesta de error o continuar con el siguiente mensaje
+                except KeyError as e:
+                    print(f'KeyError: {e}')
+                    # Manejar el error de clave faltante
+                except Exception as e:
+                    print(f'Unhandled exception: {e}')
+                    # Manejar cualquier otra excepción
 
     finally:
         print('closing socket')
         sock.close()
+
+

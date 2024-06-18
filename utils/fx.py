@@ -5,13 +5,13 @@ from time import sleep
 import utils.data_transaction as dt
 
 def handle_data(data, clase):
-    decoded_data = data.decode('utf-8', errors = 'ignore')
-    
+    decoded_data = data.decode('utf-8', errors='ignore')
     prefix = clase + 'OK'
     
     if len(decoded_data) > len(prefix):
         json_str = decoded_data[len(prefix):]
         try:
+            print(json_str)
             data_dict = js.loads(json_str)
         except js.JSONDecodeError:
             print("OK, no hay json")
@@ -34,31 +34,33 @@ def handle_data(data, clase):
         print("No hay datos después de 'OK'")
         return {}
 
-def transaction(sock, clase, json):
-    print (json)
-    message = dt.create_transaction(clase, json)
+def transaction(sock, clase, json_data):
+    print(json_data)
+    message = dt.create_transaction(clase, json_data)
     print('sending {!r}'.format(message))
     sock.sendall(message)
 
     # Esperar la respuesta
     print("...Esperando transaccion")
     amount_received = 0
-    amount_expected = int(sock.recv(5))
+    amount_expected = int(sock.recv(5).decode())  # Decodificar la cantidad esperada
+    data = b''
 
     while amount_received < amount_expected:
-        data = sock.recv(amount_expected - amount_received)
-        amount_received += len(data)
+        chunk = sock.recv(amount_expected - amount_received)
+        if not chunk:
+            break
+        data += chunk
+        amount_received += len(chunk)
+    
+    print(data, 'RAW DATA')
     print("Esperando Respuesta ...")
-    if clase == "suser":
-        return handle_data(data, "suser")
-    elif clase == "comun":
-        return handle_data(data, "comun")
-    elif clase == "foros":
-        return handle_data(data, "foros")
+    if clase in ["suser", "comun", "foros"]:
+        return handle_data(data, clase)
     else:
         print("Clase no encontrada")
-        print ('received {!r}'.format(data))
-
+        print('received {!r}'.format(data))
+        return {}
 
 def cliente_login(sock):
     rut = input("Ingrese el rut del usuario: ")
