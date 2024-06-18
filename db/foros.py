@@ -133,10 +133,10 @@ def update_foro(id_foro, tipo_foro, estado_foro, tema_foro):
 
 # Métodos para enviar mensajes a un foro
 
-def create_foro_mensaje(id_usuario, id_foro, contenido, archivo=None):
+def create_foro_mensaje(id_usuario, id_foro, contenido):
     session = get_session()
     try:
-        foro = session.query(Foro).options(joinedload(Foro.id_comunidad)).filter(Foro.id_foro == id_foro).one()
+        foro = session.query(Foro).filter(Foro.id_foro == id_foro).one()
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
 
         if foro.tipo_foro == 'importante' and usuario.tipo_usuario != 'ADMINISTRADOR':
@@ -148,7 +148,6 @@ def create_foro_mensaje(id_usuario, id_foro, contenido, archivo=None):
             fecha=datetime.now(),
             hora=datetime.now(),
             contenido=contenido,
-            archivo=archivo,
             estado='activo'
         )
         session.add(nuevo_mensaje)
@@ -157,14 +156,17 @@ def create_foro_mensaje(id_usuario, id_foro, contenido, archivo=None):
         # Enviar notificaciones si el foro es de tipo importante
         if foro.tipo_foro == 'importante':
             residentes = session.query(Usuario).filter(
-                Usuario.tipo_usuario == 'RESIDENTE',
-                Usuario.id_comunidad == foro.id_comunidad
+                Usuario.tipo_usuario == 'RESIDENTE'
             ).all()
             for residente in residentes:
                 enviar_correo(residente.correo, 'Nuevo mensaje importante', contenido)
                 enviar_notificacion(residente.id_usuario, contenido)
 
         return nuevo_mensaje
+    
+    except NoResultFound:
+        return {'error': 'Foro no encontrado'}
+    
     finally:
         session.close()
 

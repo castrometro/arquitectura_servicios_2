@@ -37,10 +37,6 @@ def handle_create_foro(data):
     if usuario.tipo_usuario != 'ADMINISTRADOR':
         return json.dumps({'error': 'Usuario no autorizado para crear foros'})
 
-    comunidad = get_comunidad(data['id_comunidad'])
-    if comunidad.id_usuario != data['id_usuario']:
-        return json.dumps({'error': 'El usuario no es administrador de esta comunidad'})
-
     create_foro(
         id_comunidad=data['id_comunidad'],
         id_usuario=data['id_usuario'],
@@ -108,12 +104,14 @@ def handle_create_foro_mensaje(data):
         id_usuario=data['id_usuario'],
         id_foro=data['id_foro'],
         contenido=data['contenido'],
-        archivo=data.get('archivo')
     )
+    print('-----------')
+    print(nuevo_mensaje)
+    print('-----------')
     if isinstance(nuevo_mensaje, dict) and 'error' in nuevo_mensaje:
-        return json.dumps(nuevo_mensaje)
+        return 'OK'
     else:
-        return json.dumps(nuevo_mensaje.to_dict())
+        return 'OK'
 
 def handle_get_foro_mensajes(data):
     required_fields = ['id_foro']

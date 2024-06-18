@@ -4,9 +4,8 @@ import sys
 from time import sleep
 import utils.data_transaction as dt
 
-
 def handle_data(data, clase):
-    decoded_data = data.decode('utf-8',errors = 'ignore')
+    decoded_data = data.decode('utf-8', errors = 'ignore')
     
     prefix = clase + 'OK'
     
@@ -18,14 +17,25 @@ def handle_data(data, clase):
             print("OK, no hay json")
             return {}
         
-        for key, value in data_dict.items():
-            print(key, ":", value)
-        return data_dict
+        if isinstance(data_dict, list):
+            print("Los datos son una lista:")
+            for item in data_dict:
+                print(item)
+            return data_dict
+        elif isinstance(data_dict, dict):
+            print("Los datos son un diccionario:")
+            for key, value in data_dict.items():
+                print(key, ":", value)
+            return data_dict
+        else:
+            print("Los datos no son ni una lista ni un diccionario.")
+            return {}
     else:
         print("No hay datos después de 'OK'")
         return {}
 
 def transaction(sock, clase, json):
+    print (json)
     message = dt.create_transaction(clase, json)
     print('sending {!r}'.format(message))
     sock.sendall(message)
@@ -188,7 +198,7 @@ def gestion_usuarios(sock, data_usuario):
                 fono = input("Ingrese el fono del nuevo usuario: ")
                 nombre = input("Ingrese el nombre del nuevo usuario: ")
                 apellido_paterno = input("Ingrese el ap_p del nuevo usuario: ")
-                apellido_materno = input("Ingrese elap_m del nuevo usuario: ")
+                apellido_materno = input("Ingrese el ap_m del nuevo usuario: ")
                 estado_cuenta = input("Ingrese el estado del nuevo usuario: ")
                 contrasena = input("Ingrese la contraseña del nuevo usuario: ")
                 json = {
@@ -342,25 +352,29 @@ def gestion_foros(sock, data_usuario):
     menus = {
         'RESIDENTE': [
             "Ver Foro",
-            "Mostrar Foros"
+            "Mostrar Foros",
+            "Gestion Mensajeria"
         ],
         'CONSERJE': [
             "Ver Foro",
-            "Mostrar Foros"
+            "Mostrar Foros",
+            "Gestion Mensajeria"
         ],
         'ADMINISTRADOR': [
             "Crear Foro",
             "Ver Foro",
             "Mostrar Foros",
             "Actualizar Foro",
-            "Eliminar Foro"
+            "Eliminar Foro",
+            "Gestion Mensajeria"
         ],
         'ADMINISTRADOR_SISTEMA': [
             "Crear Foro",
             "Ver Foro",
             "Mostrar Foros",
             "Actualizar Foro",
-            "Eliminar Foro"
+            "Eliminar Foro",
+            "Gestion Mensajeria"
         ]
     }
 
@@ -397,6 +411,7 @@ def gestion_foros(sock, data_usuario):
                     }
                 }
                 transaction(sock, clase, json)
+
 
             elif accion == "Ver Foro":
                 foro_id = input("Ingrese el ID del foro a ver: ")
@@ -454,6 +469,22 @@ def gestion_foros(sock, data_usuario):
                     }
                 }
                 transaction(sock, clase, json)
+
+            
+            elif accion == "Gestion Mensajeria":
+                id_usuario = input("Ingrese su ID de usuario:")
+                id_foro = input("Ingrese el ID del foro:")
+                contenido = input("Ingrese el contenido del mensaje:")
+                json_data = {
+                    "name_function": "create_mensaje",
+                    "data": {
+                        "id_usuario": id_usuario,
+                        "id_foro": id_foro,
+                        "contenido": contenido
+                    }
+                }
+                transaction(sock, clase, json_data)
+
         else:
             print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")
 
@@ -463,28 +494,4 @@ def gestion_productos(sock, data_usuario):
 def gestion_servicios(sock, data_usuario):
     return 0
 
-def gestion_msn(sock):
-    id_usuario = input("Ingrese su ID de usuario:")
-    id_foro = input("Ingrese el ID del foro:")
-    contenido = input("Ingrese el contenido del mensaje:")
-    json_data = {
-        "name_function": "create_message",
-        "data": {
-            "id_usuario": id_usuario,
-            "id_foro": id_foro,
-            "contenido": contenido
-        }
-    }
-    message = dt.create_transaction("msngr", json_data)
-    print('sending {!r}'.format(message))
-    sock.sendall(message)
 
-    print("Waiting for transaction")
-    amount_received = 0
-    amount_expected = int(sock.recv(5))
-
-    while amount_received < amount_expected:
-        data = sock.recv(amount_expected - amount_received)
-        amount_received += len(data)
-    print("Checking servi answer ...")
-    print('received {!r}'.format(data))

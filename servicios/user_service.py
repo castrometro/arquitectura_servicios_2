@@ -49,7 +49,7 @@ def handle_get_user(data):
     else:
         return json.dumps(usuario.to_dict())
 
-def handle_get_all_users(data):
+def handle_get_all_users():
     usuarios = get_usuarios()
     return json.dumps([usuario.to_dict() for usuario in usuarios])
 
@@ -150,13 +150,14 @@ def handle_add_admin_user(data):
 def process_user_service(data):
     name_function = data['name_function']
     data = data['data']
-
+    print (name_function)
+    print (data)
     if name_function == 'create':
         return handle_create_user(data)
     elif name_function == 'get':
         return handle_get_user(data)
     elif name_function == 'all':
-        return handle_get_all_users(data)
+        return handle_get_all_users()
     elif name_function == 'update':
         return handle_update_user(data)
     elif name_function == 'delete':
