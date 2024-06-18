@@ -111,7 +111,37 @@ def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido
     finally:
         session.close()
 
+#----------
+def update_privacidad_usuario(id_usuario, privacidad):
+    session = get_session()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
+        usuario.privacidad = privacidad
+        session.commit()
+        return usuario
+    finally:
+        session.close()
 
+def get_usuario_visible(id_usuario, requestor_id):
+    session = get_session()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
+        requestor = session.query(Usuario).filter(Usuario.id_usuario == requestor_id).one()
+
+        if usuario.privacidad == 'publica' or usuario.id_usuario == requestor.id_usuario or requestor.tipo_usuario in ['ADMINISTRADOR', 'ADMINISTRADOR_SISTEMA']:
+            return usuario.to_dict()
+        else:
+            # Return limited information
+            return {
+                'id_usuario': usuario.id_usuario,
+                'rut': usuario.rut,
+                'nombre': usuario.nombre,
+                'apellido_paterno': usuario.apellido_paterno,
+                'apellido_materno': usuario.apellido_materno
+            }
+    finally:
+        session.close()
+#-------------
 
 def login_usuario(rut, contrasena):
     session = get_session()
