@@ -6,12 +6,25 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.foros import create_foro, get_foro, get_foro_by_all_not_id, get_foros, update_foro, delete_foro, create_foro_mensaje, get_foro_mensajes
+from db.foros import create_foro, get_foro, get_foro_by_all_not_id, get_foros, update_foro, delete_foro, create_foro_mensaje, get_foro_mensajes, enviar_correo
 from db.usuarios import get_usuario  # para verificar luego si es admin o no
 from db.comunidad import get_comunidad  # para ver la comunidad a que pertenece el usuario
 
 # Configurar logging
 logging.basicConfig(filename='foro_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
+
+def send_correo(data):
+    required_fields = ['email', 'contenido']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+    
+    enviar_correo(
+        correo_destinatario=data['email'],
+        asunto='Nuevo mensaje importante de la Comunidad',
+        contenido=data['contenido']
+    )
+    return json.dumps({'status': 'ok'})
 
 def handle_create_foro(data):
     required_fields = ['id_comunidad', 'id_usuario', 'tipo_foro', 'estado_foro', 'tema_foro']
