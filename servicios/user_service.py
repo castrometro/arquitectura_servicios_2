@@ -133,7 +133,26 @@ def handle_add_admin_user(data):
     else:
         return 'No tiene permisos para realizar esta acción'
 
+def handle_update_privacidad(data):
+    required_fields = ['id_usuario', 'privacidad']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
 
+    usuario = update_privacidad_usuario(
+        id_usuario=data['id_usuario'],
+        privacidad=data['privacidad']
+    )
+    return 'OK'
+
+def handle_get_user_visible(data):
+    required_fields = ['id_usuario', 'requestor_id']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+
+    usuario = get_usuario_visible(data['id_usuario'], data['requestor_id'])
+    return json.dumps(usuario)
 
 def process_user_service(data):
     name_function = data['name_function']
