@@ -173,6 +173,10 @@ def process_user_service(data):
         return handle_login_user(data)
     elif name_function == 'register':
         return handle_register_user(data)
+    elif name_function == 'update_privacidad':
+        return handle_update_privacidad(data)
+    elif name_function == 'get_user_visible':
+        return handle_get_user_visible(data)
     else:
         return json.dumps({'error': 'Invalid function name'})
 
