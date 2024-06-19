@@ -87,7 +87,8 @@ def gestion_usuarios(sock, data_usuario):
     # Definir las opciones del menú para cada tipo de usuario
     menus = {
         'RESIDENTE': [
-            "Ver Usuario"
+            "Ver Usuario",
+            "Modificar privacidad"
         ],
         'CONSERJE': [
             "Listar usuarios",
@@ -116,7 +117,8 @@ def gestion_usuarios(sock, data_usuario):
         "Crear usuario": "4",
         "Loguear usuario": "5",
         "Ver Usuario": "6",
-        "Volver al menú principal": "7"
+        "Modificar privacidad": "7",
+        "Volver al menú principal": "8"
     }
 
     while True:
@@ -232,6 +234,19 @@ def gestion_usuarios(sock, data_usuario):
                     }
                 }
                 transaction(sock, clase, json)
+            
+            elif accion == "Modificar Privacidad":
+                user_id = data_usuario['id_usuario']
+                nueva_privacidad = input("Ingrese la nueva privacidad (publica/privada): ")
+                json = {
+                    "name_function": "update_privacidad",
+                    "data": {
+                        "id_usuario": user_id,
+                        "privacidad": nueva_privacidad
+                    }
+                }
+                transaction(sock, clase, json)
+                
         else:
             print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")
 
