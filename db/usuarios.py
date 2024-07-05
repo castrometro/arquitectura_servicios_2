@@ -6,17 +6,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from db.modelos import Usuario,Comunidad, get_session
 
-def create_usuario(comunidad, rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
+def create_usuario(id_comunidad, rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
     session = get_session()
     if session.query(Usuario).filter(Usuario.rut == rut).count() > 0:
         return {'error': 'Usuario ya existe'}
     #verificar comunidad q existe
-    if session.query(Comunidad).filter(Comunidad.id_comunidad == comunidad).count() == 0:
+    if session.query(Comunidad).filter(Comunidad.id_comunidad == id_comunidad).count() == 0:
         return {'error': 'Comunidad no existe'}
     try:
         hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         usuario = Usuario(
-            id_comunidad=comunidad,
+            id_comunidad=id_comunidad,
             rut=rut,
             tipo_usuario=tipo_usuario,
             correo=correo,

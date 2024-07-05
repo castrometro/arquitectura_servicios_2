@@ -182,7 +182,6 @@ def chat(sock, data_usuario):
         else:
             print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")
 
-
 def gestion_usuarios(sock, data_usuario):
     clase = "suser"
     tipo_usuario = data_usuario['tipo_usuario']
@@ -298,6 +297,7 @@ def gestion_usuarios(sock, data_usuario):
                 transaction(sock, clase, json)
 
             elif accion == "Crear usuario":
+                id_comunidad = input("Ingrese el id de la comunidad del nuevo usuario: ")
                 rut = input("Ingrese el rut del nuevo usuario: ")
                 tipo_usuario = input("Ingrese el tipo del nuevo usuario: ")
                 correo = input("Ingrese el email del nuevo usuario: ")
@@ -310,6 +310,7 @@ def gestion_usuarios(sock, data_usuario):
                 json = {
                     "name_function": "create",
                     "data": {
+                        "id_comunidad": id_comunidad,
                         "rut": rut,
                         "tipo_usuario": tipo_usuario,
                         "correo": correo,

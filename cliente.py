@@ -26,9 +26,9 @@ def menu_inicio():
     try:
 
         datos = cliente_login(sock)
-        print(data)
-        if 'error' in data:
-            print(data['error'], 'intentelo denuevo')
+        print(datos)
+        if 'error' in datos:
+            print(datos['error'], 'intentelo denuevo')
             sleep(2)
             print("-----------------------------------")
             menu_inicio()
@@ -109,4 +109,7 @@ def main_menu(data_usuario, tipo_usuario, sock):
 
 if __name__ == "__main__":
     menu_inicio()
+    # data_usuario = {'id_usuario': 1, 'nombre': 'Juan', 'apellido_paterno': 'Perez', 'apellido_materno': 'Gonzalez', 'tipo_usuario': 'ADMINISTRADOR_SISTEMA'}
+    # tula = connect_to_bus()
+    # main_menu(data_usuario, data_usuario['tipo_usuario'], tula)
 

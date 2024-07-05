@@ -92,6 +92,7 @@ class Foro(Base):
 class Usuario(Base):
     __tablename__ = 'usuario'
     id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad'))
+    #id_departamento = Column(Integer, ForeignKey('departamento.id_departamento'))
     id_usuario = Column(Integer, primary_key=True, autoincrement=True)
     rut = Column(String(50))
     tipo_usuario = Column(String(50))
@@ -105,6 +106,7 @@ class Usuario(Base):
     privacidad = Column(String(10), default='publica')  # Nueva columna para la privacidad
     def to_dict(self):
         return {
+            'id_comunidad': self.id_comunidad,
             'id_usuario': self.id_usuario,
             'rut': self.rut,
             'tipo_usuario': self.tipo_usuario,
