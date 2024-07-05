@@ -4,13 +4,19 @@ import bcrypt
 from sqlalchemy.orm.exc import NoResultFound
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from db.modelos import Usuario, get_session
+from db.modelos import Usuario,Comunidad, get_session
 
-def create_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
+def create_usuario(comunidad, rut, tipo_usuario, correo, fono, nombre, apellido_paterno, apellido_materno, estado_cuenta, contrasena):
     session = get_session()
+    if session.query(Usuario).filter(Usuario.rut == rut).count() > 0:
+        return {'error': 'Usuario ya existe'}
+    #verificar comunidad q existe
+    if session.query(Comunidad).filter(Comunidad.id_comunidad == comunidad).count() == 0:
+        return {'error': 'Comunidad no existe'}
     try:
         hashed_password = bcrypt.hashpw(contrasena.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         usuario = Usuario(
+            id_comunidad=comunidad,
             rut=rut,
             tipo_usuario=tipo_usuario,
             correo=correo,
@@ -23,7 +29,7 @@ def create_usuario(rut, tipo_usuario, correo, fono, nombre, apellido_paterno, ap
         )
         session.add(usuario)
         session.commit()
-        return usuario
+        return {'message': 'Usuario creado con exito'}
     finally:
         session.close()
 
@@ -68,6 +74,18 @@ def get_usuario_by_rut(rut):
     finally:
         session.close()
 
+def get_usuario_by_comunidad(comunidad):
+    session = get_session()
+    try:
+        usuario = session.query(Usuario).filter(Usuario.id_comunidad == comunidad).all()
+        return usuario
+    except NoResultFound:
+            return {'error': 'Usuario no encontrado'}
+    finally:
+        session.close()
+
+
+
 def delete_usuario(id_usuario):
     session = get_session()
     try:
@@ -87,21 +105,21 @@ def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
         
         # Solo actualizar los campos que no son 0
-        if rut != '0':
+        if rut != '':
             usuario.rut = rut
-        if tipo_usuario != '0':
+        if tipo_usuario != '':
             usuario.tipo_usuario = tipo_usuario
-        if correo != '0':
+        if correo != '':
             usuario.correo = correo
-        if fono != '0':
+        if fono != '':
             usuario.fono = fono
-        if nombre != '0':
+        if nombre != '':
             usuario.nombre = nombre
-        if apellido_paterno != '0':
+        if apellido_paterno != '':
             usuario.apellido_paterno = apellido_paterno
-        if apellido_materno != '0':
+        if apellido_materno != '':
             usuario.apellido_materno = apellido_materno
-        if estado_cuenta != '0':
+        if estado_cuenta != '':
             usuario.estado_cuenta = estado_cuenta
         
         session.commit()

@@ -3,12 +3,14 @@ import os
 import json
 import logging
 
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from db.modelos import Chat, ChatMensaje, Usuario, get_session
 from db.chats import create_chat, get_chat, create_chat_mensaje, get_chat_mensajes
 from db.usuarios import get_usuario
 from db.comunidad import get_comunidad
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 
 import utils.bus as bus
 
@@ -24,20 +26,20 @@ def handle_create_chat(data):
     usuario_remitente = get_usuario(data['id_usuario_remitente'])
     usuario_receptor = get_usuario(data['id_usuario_receptor'])
 
-    if usuario_remitente.tipo_usuario == 'ADMINISTRADOR':
-        comunidad_remitente = get_comunidad(usuario_remitente.id_comunidad)
-        if usuario_receptor.id_comunidad != comunidad_remitente.id_comunidad:
-            return json.dumps({'error': 'El residente no pertenece a la comunidad del administrador'})
+    # if usuario_remitente.tipo_usuario == 'ADMINISTRADOR':
+    #     comunidad_remitente = get_comunidad(usuario_remitente.id_comunidad)
+    #     if usuario_receptor.id_comunidad != comunidad_remitente.id_comunidad:
+    #         return json.dumps({'error': 'El residente no pertenece a la comunidad del administrador'})
 
-    elif usuario_remitente.tipo_usuario == 'RESIDENTE':
-        if usuario_receptor.tipo_usuario != 'ADMINISTRADOR' or usuario_remitente.id_comunidad != usuario_receptor.id_comunidad:
-            return json.dumps({'error': 'El residente solo puede crear chats con el administrador de su comunidad'})
+    # elif usuario_remitente.tipo_usuario == 'RESIDENTE':
+    #     if usuario_receptor.tipo_usuario != 'ADMINISTRADOR' or usuario_remitente.id_comunidad != usuario_receptor.id_comunidad:
+    #         return json.dumps({'error': 'El residente solo puede crear chats con el administrador de su comunidad'})
     
-    else:
-        return json.dumps({'error': 'Solo los administradores y residentes pueden crear chats directos'})
+    # else:
+    #     return json.dumps({'error': 'Solo los administradores y residentes pueden crear chats directos'})
 
     nuevo_chat = create_chat(data['id_usuario_remitente'], data['id_usuario_receptor'])
-    return json.dumps(nuevo_chat.to_dict())
+    return 'OK'
 
 def handle_get_chat(data):
     required_fields = ['id_chat']
@@ -46,6 +48,8 @@ def handle_get_chat(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
 
     chat = get_chat(data['id_chat'])
+    print(chat)
+    print(chat.to_dict())
     return json.dumps(chat.to_dict())
 
 def handle_create_chat_mensaje(data):
@@ -60,7 +64,7 @@ def handle_create_chat_mensaje(data):
         contenido=data['contenido'],
         archivo=data.get('archivo')
     )
-    return json.dumps(nuevo_mensaje.to_dict())
+    return 'OK'
 
 def handle_get_chat_mensajes(data):
     required_fields = ['id_chat']

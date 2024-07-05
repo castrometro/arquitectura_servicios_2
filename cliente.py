@@ -6,7 +6,8 @@ def mostrar_menu(opciones):
     print("\nSeleccione un servicio:")
     for key, value in opciones.items():
         print(f"{key}. {value['nombre']}")
-    print("4. Salir")
+    len_opciones = len(opciones)
+    print(f"{len_opciones + 1}. Salir")
 
 def connect_to_bus():
     # Crear un socket TCP/IP
@@ -24,7 +25,7 @@ def menu_inicio():
     sock = connect_to_bus()
     try:
 
-        data = cliente_login(sock)
+        datos = cliente_login(sock)
         print(data)
         if 'error' in data:
             print(data['error'], 'intentelo denuevo')
@@ -33,7 +34,7 @@ def menu_inicio():
             menu_inicio()
         else:
             print("Inicio de sesión exitoso.")
-            data_usuario = data
+            data_usuario = datos
             main_menu(data_usuario, data_usuario['tipo_usuario'], sock)
         # main_menu(data_usuario,data_usuario['tipo_usuario'],sock)
     finally:
@@ -52,22 +53,26 @@ def main_menu(data_usuario, tipo_usuario, sock):
         '1': {'nombre': 'Gestión de Usuarios', 'funcion': gestion_usuarios},
         '2': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '3': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
+        '4': {'nombre': 'CHAT', 'funcion': chat},
     }
 
     opciones_admin = {
         '1': {'nombre': 'Gestión de Usuarios', 'funcion': gestion_usuarios},
         '2': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '3': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
+        '4': {'nombre': 'CHAT', 'funcion': chat},
     }
 
     opciones_residente = {
         '1': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
-        '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros}
+        '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
+        '3': {'nombre': 'CHAT', 'funcion': chat},
     }
 
     opciones_conserje = {
         '1': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
+        '3': {'nombre': 'CHAT', 'funcion': chat},
     }
 
     if tipo_usuario == 'ADMINISTRADOR_SISTEMA':
@@ -94,7 +99,7 @@ def main_menu(data_usuario, tipo_usuario, sock):
             finally:
                 print('closing socket')
                 sock.close()
-        elif servicio == '4':
+        elif servicio == '5':
             print("Saliendo del programa.")
             break
         else:

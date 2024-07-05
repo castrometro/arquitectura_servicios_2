@@ -8,8 +8,8 @@ import os
 load_dotenv('C:/Users/David/Documents/Github/arquitectura_servicios/.env')
 
 # Obtener las variables de entorno
-DB_USER = 'finflow'
-DB_PASSWORD = 'finflow'
+DB_USER = 'postgres'
+DB_PASSWORD = 'mysecretpassword'
 DB_HOST = 'localhost'
 DB_PORT = 5432
 DB_NAME = 'arquitectura_servicios'
@@ -91,6 +91,7 @@ class Foro(Base):
 
 class Usuario(Base):
     __tablename__ = 'usuario'
+    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad'))
     id_usuario = Column(Integer, primary_key=True, autoincrement=True)
     rut = Column(String(50))
     tipo_usuario = Column(String(50))
@@ -102,7 +103,6 @@ class Usuario(Base):
     estado_cuenta = Column(String(50), default = 'pendiente') # estado predeterminado
     contrasena = Column(String(255))
     privacidad = Column(String(10), default='publica')  # Nueva columna para la privacidad
-    
     def to_dict(self):
         return {
             'id_usuario': self.id_usuario,
@@ -144,7 +144,7 @@ class Chat(Base):
             'id_chat': self.id_chat,
             'id_usuario_remitente': self.id_usuario_remitente,
             'id_usuario_receptor': self.id_usuario_receptor,
-            'fecha_chat': self.fecha_chat
+            # 'fecha_chat': self.fecha_chat
         }
 
 class ChatMensaje(Base):
@@ -163,7 +163,7 @@ class ChatMensaje(Base):
             'archivo': self.archivo,
             'id_usuario': self.id_usuario,
             'id_chat': self.id_chat,
-            'fecha_mensaje': self.fecha_mensaje
+            # 'fecha_mensaje': self.fecha_mensaje
         }
 
 class Notificacion(Base):

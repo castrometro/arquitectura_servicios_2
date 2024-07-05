@@ -18,7 +18,8 @@ def handle_create_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    create_usuario(
+    data = create_usuario(
+        id_comunidad=data['id_comunidad'],
         rut=data['rut'],
         tipo_usuario=data['tipo_usuario'],
         correo=data['correo'],
@@ -29,12 +30,9 @@ def handle_create_user(data):
         estado_cuenta=data['estado_cuenta'],
         contrasena=data['contrasena']
     )
-    usuario = get_usuario_by_rut(data['rut'])
+    return json.dumps(data)
 
-    if isinstance(usuario, dict) and 'error' in usuario:
-        return json.dumps(usuario)
-    else:
-        return json.dumps(usuario.to_dict())
+ 
 
 def handle_get_user(data):
     required_fields = ['id_usuario']
@@ -43,14 +41,13 @@ def handle_get_user(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     usuario = get_usuario(data['id_usuario'])
-
-    if isinstance(usuario, dict) and 'error' in usuario:
-        return json.dumps(usuario)
-    else:
-        return json.dumps(usuario.to_dict())
+    return json.dumps(usuario)
+    
 
 def handle_get_all_users():
     usuarios = get_usuarios()
+    for usuario in usuarios:
+        print(usuario)
     return json.dumps([usuario.to_dict() for usuario in usuarios])
 
 def handle_update_user(data):
@@ -83,14 +80,13 @@ def handle_delete_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    delete_usuario(data['id_usuario'])
-
     usuario = get_usuario(data['id_usuario'])
 
     if isinstance(usuario, dict) and 'error' in usuario:
         return json.dumps(usuario)
     else:
-        return json.dumps(usuario.to_dict())
+        delete_usuario(data['id_usuario'])
+        return 'Usuario eliminado correctamente'
 
 def handle_login_user(data):
     required_fields = ['rut', 'contrasena']
@@ -128,7 +124,7 @@ def handle_add_admin_user(data):
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     asignador = get_usuario(data.get('id_asignador'))
-    if( asignador.tipo_usuario == 'ADMINISTRADOR_SISTEMA'):
+    if(asignador.tipo_usuario == 'ADMINISTRADOR_SISTEMA'):
         return
     else:
         return 'No tiene permisos para realizar esta acción'

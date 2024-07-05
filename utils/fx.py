@@ -55,7 +55,7 @@ def transaction(sock, clase, json_data):
     
     print(data, 'RAW DATA')
     print("Esperando Respuesta ...")
-    if clase in ["suser", "comun", "foros"]:
+    if clase in ["suser", "comun", "foros", "chats"]:
         return handle_data(data, clase)
     else:
         print("Clase no encontrada")
@@ -79,6 +79,109 @@ def cliente_login(sock):
     return data_dict
     #return estado, usuario
     
+def chat(sock, data_usuario):
+    clase="chats"
+    tipo_usuario = data_usuario['tipo_usuario']
+    menus = {
+        'RESIDENTE': [
+            "Ver Chat",
+            "Enviar Mensaje",
+            "Crear Chat",
+            "Obtener Mensajes"
+        ],
+        'CONSERJE': [
+            "Ver Chat",
+            "Enviar Mensaje",
+            "Crear Chat",
+            "Obtener Mensajes"
+        ],
+        'ADMINISTRADOR': [
+            "Ver Chat",
+            "Enviar Mensaje",
+            "Crear Chat",
+            "Obtener Mensajes"
+        ],
+        'ADMINISTRADOR_SISTEMA': [
+            "Ver Chat",
+            "Enviar Mensaje",
+            "Crear Chat",
+            "Obtener Mensajes"
+        ]
+    }
+
+    menu_actions = {
+        "Ver Chat": "1",
+        "Mostrar Chats": "2",
+        "Enviar Mensaje": "3",
+        "Crear Chat": "4",
+        "Obtener Mensajes": "5",
+        "Volver al menú principal": "6"
+    }
+
+    while True:
+        print("\nSeleccione una operación de Chat:")
+        opciones_disponibles = menus[tipo_usuario]
+        for i, opcion in enumerate(opciones_disponibles, start=1):
+            print(f"{i}. {opcion}")
+
+        print(f"{len(opciones_disponibles) + 1}. Volver al menú principal")
+
+        opcion = input("Ingrese el número de la operación: ")
+
+        if opcion == str(len(opciones_disponibles) + 1):
+            break
+        elif opcion.isdigit() and 1 <= int(opcion) <= len(opciones_disponibles):
+            accion = opciones_disponibles[int(opcion) - 1]
+
+            if accion == "Ver Chat":
+                chat_id = input("Ingrese el ID del chat a ver: ")
+                json = {
+                    "name_function": "get",
+                    "data": {
+                        "id_chat": chat_id,
+                    }
+                }
+                transaction(sock, clase, json)
+
+
+            elif accion == "Enviar Mensaje":
+                id_usuario = data_usuario['id_usuario']
+                id_chat = input("Ingrese el ID del chat:")
+                contenido = input("Ingrese el contenido del mensaje:")
+                json_data = {
+                    "name_function": "create_mensaje",
+                    "data": {
+                        "id_usuario": id_usuario,
+                        "id_chat": id_chat,
+                        "contenido": contenido
+                    }
+                }
+                transaction(sock, clase, json_data)
+
+            elif accion == "Crear Chat":
+                id_usuario = data_usuario['id_usuario']
+                id_usuario2 = input("Ingrese el ID del otro usuario:")
+                json_data = {
+                    "name_function": "create",
+                    "data": {
+                        "id_usuario_remitente": id_usuario,
+                        "id_usuario_receptor": id_usuario2
+                    }
+                }
+                transaction(sock, clase, json_data)
+
+            elif accion == "Obtener Mensajes":
+                chat_id = input("Ingrese el ID del chat:")
+                json_data = {
+                    "name_function": "get_mensajes",
+                    "data": {
+                        "id_chat": chat_id
+                    }
+                }
+                transaction(sock, clase, json_data)
+        else:
+            print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")
+
 
 def gestion_usuarios(sock, data_usuario):
     clase = "suser"
@@ -195,7 +298,6 @@ def gestion_usuarios(sock, data_usuario):
                 transaction(sock, clase, json)
 
             elif accion == "Crear usuario":
-                id_usuario = input("Ingrese el id del nuevo usuario: ")
                 rut = input("Ingrese el rut del nuevo usuario: ")
                 tipo_usuario = input("Ingrese el tipo del nuevo usuario: ")
                 correo = input("Ingrese el email del nuevo usuario: ")
@@ -208,7 +310,6 @@ def gestion_usuarios(sock, data_usuario):
                 json = {
                     "name_function": "create",
                     "data": {
-                        "id_usuario": id_usuario,
                         "rut": rut,
                         "tipo_usuario": tipo_usuario,
                         "correo": correo,

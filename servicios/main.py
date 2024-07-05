@@ -14,6 +14,9 @@ def run_foro_service():
 def run_mensajeria_service():
     subprocess.run(['pipenv', 'run', 'python', 'servicios/mensajeria_service.py'])
 
+def run_chat_service():
+    subprocess.run(['pipenv', 'run', 'python', 'servicios/chat_service.py'])
+
 def tail_log(log_file):
     with open(log_file, 'r') as f:
         while True:
@@ -29,12 +32,14 @@ if __name__ == "__main__":
     user_process = multiprocessing.Process(target=run_user_service)
     foro_process = multiprocessing.Process(target=run_foro_service)
     msn_process = multiprocessing.Process(target=run_mensajeria_service)
+    chat_process = multiprocessing.Process(target=run_chat_service)
 
     # Iniciar procesos
     comunidad_process.start()
     user_process.start()
     foro_process.start()
     msn_process.start()
+    chat_process.start()
 
     print("Services started. Type 'comunidad' or 'user' to view logs, or 'exit' to quit.")
 
