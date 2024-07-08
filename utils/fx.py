@@ -99,12 +99,16 @@ def chat(sock, data_usuario):
             "Ver Chat",
             "Enviar Mensaje",
             "Crear Chat",
+            "Mostrar Chats",
+            "Eliminar Chat",
             "Obtener Mensajes"
         ],
         'ADMINISTRADOR_SISTEMA': [
             "Ver Chat",
             "Enviar Mensaje",
             "Crear Chat",
+            "Mostrar Chats",
+            "Eliminar Chat",
             "Obtener Mensajes"
         ]
     }
@@ -143,6 +147,14 @@ def chat(sock, data_usuario):
                 }
                 transaction(sock, clase, json)
 
+            elif accion == "Mostrar Chats":
+                json = {
+                    "name_function": "all",
+                    "data": {
+                        "name": "chats",
+                    }
+                }
+                transaction(sock, clase, json)
 
             elif accion == "Enviar Mensaje":
                 id_usuario = data_usuario['id_usuario']
@@ -158,6 +170,16 @@ def chat(sock, data_usuario):
                 }
                 transaction(sock, clase, json_data)
 
+            elif accion == "Eliminar Chat":
+                chat_id = input("Ingrese el ID del chat a eliminar: ")
+                json = {
+                    "name_function": "delete",
+                    "data": {
+                        "id_chat": chat_id,
+                    }
+                }
+                transaction(sock, clase, json)
+
             elif accion == "Crear Chat":
                 id_usuario = data_usuario['id_usuario']
                 id_usuario2 = input("Ingrese el ID del otro usuario:")
@@ -171,11 +193,11 @@ def chat(sock, data_usuario):
                 transaction(sock, clase, json_data)
 
             elif accion == "Obtener Mensajes":
-                chat_id = input("Ingrese el ID del chat:")
+                id_chat = input("Ingrese el ID del chat:")
                 json_data = {
                     "name_function": "get_mensajes",
                     "data": {
-                        "id_chat": chat_id
+                        "id_chat": id_chat
                     }
                 }
                 transaction(sock, clase, json_data)
@@ -472,7 +494,8 @@ def gestion_foros(sock, data_usuario):
         'RESIDENTE': [
             "Ver Foro",
             "Mostrar Foros",
-            "Gestion Mensajeria"
+            "Gestion Mensajeria",
+            "Ver Mensajes"
         ],
         'CONSERJE': [
             "Ver Foro",
@@ -485,7 +508,8 @@ def gestion_foros(sock, data_usuario):
             "Mostrar Foros",
             "Actualizar Foro",
             "Eliminar Foro",
-            "Gestion Mensajeria"
+            "Enviar Mensaje",
+            "Ver Mensajes"
         ],
         'ADMINISTRADOR_SISTEMA': [
             "Crear Foro",
@@ -493,7 +517,8 @@ def gestion_foros(sock, data_usuario):
             "Mostrar Foros",
             "Actualizar Foro",
             "Eliminar Foro",
-            "Gestion Mensajeria"
+            "Enviar Mensaje",
+            "Ver Mensajes"
         ]
     }
 
@@ -590,7 +615,7 @@ def gestion_foros(sock, data_usuario):
                 transaction(sock, clase, json)
 
             
-            elif accion == "Gestion Mensajeria":
+            elif accion == "Enviar Mensaje":
                 id_usuario = input("Ingrese su ID de usuario:")
                 id_foro = input("Ingrese el ID del foro:")
                 contenido = input("Ingrese el contenido del mensaje:")
@@ -600,6 +625,16 @@ def gestion_foros(sock, data_usuario):
                         "id_usuario": id_usuario,
                         "id_foro": id_foro,
                         "contenido": contenido
+                    }
+                }
+                transaction(sock, clase, json_data)
+            
+            elif accion == "Ver Mensajes":
+                foro_id = input("Ingrese el ID del foro:")
+                json_data = {
+                    "name_function": "get_mensajes",
+                    "data": {
+                        "id_foro": foro_id
                     }
                 }
                 transaction(sock, clase, json_data)

@@ -139,8 +139,8 @@ def create_foro_mensaje(id_usuario, id_foro, contenido):
         foro = session.query(Foro).filter(Foro.id_foro == id_foro).one()
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
 
-        if foro.tipo_foro == 'importante' and usuario.tipo_usuario != 'ADMINISTRADOR':
-            return {'error': 'Solo el Administrador de Comunidad puede enviar mensajes en foros importantes'}
+        if foro.tipo_foro == 'importante' and usuario.tipo_usuario != 'ADMINISTRADOR' and usuario.tipo_usuario != 'ADMINISTRADOR_SISTEMA':
+            return {'error': 'Solo el Administrador de Comunidad y Administrador de Sistema puede enviar mensajes en foros importantes'}
 
         nuevo_mensaje = ForoMensaje(
             id_usuario=id_usuario,

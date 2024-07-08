@@ -34,8 +34,8 @@ def handle_create_foro(data):
 
     # Obtener usuario y verificar si es administrador de la comunidad
     usuario = get_usuario(data['id_usuario'])
-    if usuario.tipo_usuario != 'ADMINISTRADOR':
-        return json.dumps({'error': 'Usuario no autorizado para crear foros'})
+    # if usuario.tipo_usuario != 'ADMINISTRADOR':
+    #     return json.dumps({'error': 'Usuario no autorizado para crear foros'})
 
     create_foro(
         id_comunidad=data['id_comunidad'],
@@ -57,7 +57,10 @@ def handle_get_foro(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
     foro = get_foro(data['id_foro'])
-    return json.dumps(foro.to_dict())
+    if isinstance(foro, dict) and 'error' in foro:
+        return json.dumps(foro)
+    else:
+        return json.dumps(foro.to_dict())
 
 def handle_get_foros(data):
     foros = get_foros()

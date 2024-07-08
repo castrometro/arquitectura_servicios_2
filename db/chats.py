@@ -26,6 +26,16 @@ def get_chat(id_chat):
     finally:
         session.close()
 
+def get_chats():
+    session = get_session()
+    try:
+        chats = session.query(Chat).all()
+        return chats
+    except NoResultFound:
+        return {'error': 'No hay chats'}
+    finally:
+        session.close()
+
 def create_chat_mensaje(id_chat, id_usuario, contenido, archivo=None):
     session = get_session()
     try:
@@ -51,3 +61,28 @@ def get_chat_mensajes(id_chat):
         return {'error': 'Mensajes no encontrados'}
     finally:
         session.close()
+
+def eliminar_chat_mensaje(id_mensaje):
+    session = get_session()
+    try:
+        mensaje = session.query(ChatMensaje).filter(ChatMensaje.id_chat_mensaje == id_mensaje).one()
+        session.delete(mensaje)
+        session.commit()
+        return mensaje
+    except NoResultFound:
+        return {'error': 'Mensaje no encontrado'}
+    finally:
+        session.close()
+
+def eliminar_chat(id_chat):
+    session = get_session()
+    try:
+        chat = session.query(Chat).filter(Chat.id_chat == id_chat).one()
+        session.delete(chat)
+        session.commit()
+        return chat
+    except NoResultFound:
+        return {'error': 'Chat no encontrado'}
+    finally:
+        session.close()
+

@@ -14,8 +14,6 @@ DB_HOST = 'localhost'
 DB_PORT = 5432
 DB_NAME = 'arquitectura_servicios'
 
-
-
 # Verificar que las variables de entorno se han cargado correctamente
 if not all([DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME]):
     raise Exception("Faltan variables de entorno requeridas")
@@ -34,9 +32,9 @@ Base = declarative_base()
 class Departamento(Base):
     __tablename__ = 'departamento'
     id_departamento = Column(Integer, primary_key=True)
-    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad'))
+    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad', onupdate='CASCADE', ondelete='SET NULL'))
     numero = Column(String(50))
-    id_usuario_propietario = Column(Integer, ForeignKey('usuario.id_usuario'))
+    id_usuario_propietario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
     
     def to_dict(self):
         return {
@@ -60,8 +58,8 @@ class Comunidad(Base):
 class Usuario_Departamento(Base):
     __tablename__ = 'usuario_departamento'
     id_usuario_departamento = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_departamento = Column(Integer, ForeignKey('departamento.id_departamento'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_departamento = Column(Integer, ForeignKey('departamento.id_departamento', onupdate='CASCADE', ondelete='SET NULL'))
     
     def to_dict(self):
         return {
@@ -73,8 +71,8 @@ class Usuario_Departamento(Base):
 class Foro(Base):
     __tablename__ = 'foro'
     id_foro = Column(Integer, primary_key=True)
-    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad'))
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
+    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad', onupdate='CASCADE', ondelete='SET NULL'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
     tipo_foro = Column(String(50))
     estado_foro = Column(String(50))
     tema_foro = Column(String(50))
@@ -91,8 +89,7 @@ class Foro(Base):
 
 class Usuario(Base):
     __tablename__ = 'usuario'
-    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad'))
-    #id_departamento = Column(Integer, ForeignKey('departamento.id_departamento'))
+    id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad', onupdate='CASCADE', ondelete='SET NULL'))
     id_usuario = Column(Integer, primary_key=True, autoincrement=True)
     rut = Column(String(50))
     tipo_usuario = Column(String(50))
@@ -101,9 +98,10 @@ class Usuario(Base):
     nombre = Column(String(50))
     apellido_paterno = Column(String(50))
     apellido_materno = Column(String(50))
-    estado_cuenta = Column(String(50), default = 'pendiente') # estado predeterminado
+    estado_cuenta = Column(String(50), default='pendiente')  # estado predeterminado
     contrasena = Column(String(255))
     privacidad = Column(String(10), default='publica')  # Nueva columna para la privacidad
+    
     def to_dict(self):
         return {
             'id_comunidad': self.id_comunidad,
@@ -137,8 +135,8 @@ class Usuario(Base):
 class Chat(Base):
     __tablename__ = 'chat'
     id_chat = Column(Integer, primary_key=True)
-    id_usuario_remitente = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_usuario_receptor = Column(Integer, ForeignKey('usuario.id_usuario'))
+    id_usuario_remitente = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_usuario_receptor = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
     fecha_chat = Column(DateTime)
     
     def to_dict(self):
@@ -154,8 +152,8 @@ class ChatMensaje(Base):
     id_chat_mensaje = Column(Integer, primary_key=True)
     contenido = Column(Text)
     archivo = Column(String(100))
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_chat = Column(Integer, ForeignKey('chat.id_chat'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_chat = Column(Integer, ForeignKey('chat.id_chat', onupdate='CASCADE', ondelete='SET NULL'))
     fecha_mensaje = Column(DateTime)
     
     def to_dict(self):
@@ -173,8 +171,8 @@ class Notificacion(Base):
     id_notificacion = Column(Integer, primary_key=True)
     fecha = Column(DateTime)
     hora = Column(DateTime)
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_foro = Column(Integer, ForeignKey('foro.id_foro'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_foro = Column(Integer, ForeignKey('foro.id_foro', onupdate='CASCADE', ondelete='SET NULL'))
     
     def to_dict(self):
         return {
@@ -188,8 +186,8 @@ class Notificacion(Base):
 class UsuarioSuspendido(Base):
     __tablename__ = 'usuario_suspendido'
     id_usuario_suspendido = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_foro = Column(Integer, ForeignKey('foro.id_foro'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_foro = Column(Integer, ForeignKey('foro.id_foro', onupdate='CASCADE', ondelete='SET NULL'))
     duracion = Column(Integer)
     fecha_moderacion = Column(DateTime)
     estado = Column(String(50))
@@ -209,8 +207,8 @@ class UsuarioSuspendido(Base):
 class ForoMensaje(Base):
     __tablename__ = 'foro_mensaje'
     id_foro_mensaje = Column(Integer, primary_key=True)
-    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario'))
-    id_foro = Column(Integer, ForeignKey('foro.id_foro'))
+    id_usuario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
+    id_foro = Column(Integer, ForeignKey('foro.id_foro', onupdate='CASCADE', ondelete='SET NULL'))
     fecha = Column(DateTime)
     hora = Column(DateTime)
     contenido = Column(Text)
@@ -222,8 +220,6 @@ class ForoMensaje(Base):
             'id_foro_mensaje': self.id_foro_mensaje,
             'id_usuario': self.id_usuario,
             'id_foro': self.id_foro,
-            'fecha': self.fecha,
-            'hora': self.hora,
             'contenido': self.contenido,
             'archivo': self.archivo,
             'estado': self.estado

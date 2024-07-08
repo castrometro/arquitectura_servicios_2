@@ -6,7 +6,7 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from db.modelos import Chat, ChatMensaje, Usuario, get_session
-from db.chats import create_chat, get_chat, create_chat_mensaje, get_chat_mensajes
+from db.chats import *
 from db.usuarios import get_usuario
 from db.comunidad import get_comunidad
 
@@ -48,9 +48,17 @@ def handle_get_chat(data):
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
 
     chat = get_chat(data['id_chat'])
-    print(chat)
-    print(chat.to_dict())
     return json.dumps(chat.to_dict())
+
+def handle_delete_chat(data):
+    required_fields = ['id_chat']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+
+    chat = delete_chat(data['id_chat'])
+    return json.dumps(chat.to_dict())
+
 
 def handle_create_chat_mensaje(data):
     required_fields = ['id_chat', 'id_usuario', 'contenido']
@@ -65,6 +73,20 @@ def handle_create_chat_mensaje(data):
         archivo=data.get('archivo')
     )
     return 'OK'
+
+def handle_get_chats(data):
+    chats = get_chats()
+    return json.dumps([chat.to_dict() for chat in chats])
+
+
+def handle_delete_chat_mensaje(data):
+    required_fields = ['id_mensaje']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+
+    mensaje = eliminar_chat_mensaje(data['id_mensaje'])
+    return json.dumps(mensaje.to_dict())
 
 def handle_get_chat_mensajes(data):
     required_fields = ['id_chat']
@@ -81,6 +103,10 @@ def process_chat_service(data):
 
     if name_function == 'create':
         return handle_create_chat(data)
+    elif name_function == 'all':
+        return handle_get_chats(data)
+    elif name_function == 'delete':
+        return handle_delete_chat(data)
     elif name_function == 'get':
         return handle_get_chat(data)
     elif name_function == 'create_mensaje':

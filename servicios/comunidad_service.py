@@ -62,12 +62,10 @@ def handle_delete_comunidad(data):
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+     
     delete_comunidad(data['id_comunidad'])
-    comunidad = get_comunidad(data['id_comunidad'])
-    if isinstance(comunidad, dict) and 'error' in comunidad:
-        return json.dumps(comunidad)
-    else:
-        return json.dumps(comunidad.to_dict())
+    return 'Comunidad eliminada correctamente'
+   
 
 
 def process_comunidad_service(data):

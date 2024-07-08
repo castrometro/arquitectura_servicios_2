@@ -109,7 +109,7 @@ def main_menu(data_usuario, tipo_usuario, sock):
 
 if __name__ == "__main__":
     menu_inicio()
-    # data_usuario = {'id_usuario': 1, 'nombre': 'Juan', 'apellido_paterno': 'Perez', 'apellido_materno': 'Gonzalez', 'tipo_usuario': 'ADMINISTRADOR_SISTEMA'}
-    # tula = connect_to_bus()
-    # main_menu(data_usuario, data_usuario['tipo_usuario'], tula)
+    # data_usuario = {'id_usuario': 1, 'nombre': 'Esteban', 'apellido_paterno': 'Paredes', 'apellido_materno': 'Waren', 'tipo_usuario': 'ADMINISTRADOR_SISTEMA'}
+    # aux = connect_to_bus()
+    # main_menu(data_usuario, data_usuario['tipo_usuario'], aux)
 
