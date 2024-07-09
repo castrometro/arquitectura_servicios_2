@@ -3,13 +3,17 @@ import json as js
 import sys
 from time import sleep
 import utils.data_transaction as dt
+total_message = b''
 
 def handle_data(data, clase):
+    print('handle data-------')
     decoded_data = data.decode('utf-8', errors='ignore')
+    print ("Decoded data: ", decoded_data)
     prefix = clase + 'OK'
     
     if len(decoded_data) > len(prefix):
-        json_str = decoded_data[len(prefix):]
+        json_str = decoded_data
+        print ("JSON: ", json_str)
         try:
             print(json_str)
             data_dict = js.loads(json_str)
@@ -33,9 +37,12 @@ def handle_data(data, clase):
     else:
         print("No hay datos después de 'OK'")
         return {}
-
-
+total_lenght = 0
+total_message = b''
 def transaction(sock, clase, json_data):
+    global total_lenght 
+    global total_message
+    print ("------------------")
     print("Enviando transaccion ...")
     print("Clase: ", clase)
     print ("------------------")
@@ -49,27 +56,90 @@ def transaction(sock, clase, json_data):
     print('sending {!r}'.format(message))
     sock.sendall(message)
     print ("------------------")
-    # Esperar la respuesta
-    print("...Esperando transaccion respuesta")
-    amount_received = 0
-    amount_expected = int(sock.recv(5).decode())  # Decodificar la cantidad esperada
-    data = b''
+    while len(total_message) != total_lenght or total_message == b'':
+        # Esperar la respuesta
+        print("...Esperando transaccion respuesta")
+        amount_received = 0
+        a = sock.recv(17).decode()
+        print ("------------------")
+        print("Recibido: ", a)
+        print ("------------------")
+        amount_expected = int(a[0:5])
+        total_lenght = int(a[12:]) # Decodificar la cantidad esperada
+        print("Cantidad Total: ", total_lenght)
+        print("Cantidad esperada: ", amount_expected)
+        # data = b''
+        # total_message = b''
+        # while amount_received < amount_expected:
+        #         data = sock.recv(amount_expected - amount_received)
+        #         amount_received += len(data)
+        # print("Verificando respuesta del servidor...")
+        # print('Recibido {!r}'.format(data))
+        # print(data, 'RAW DATA')
+        # print("Esperando Respuesta ...")
+        # if clase in ["suser", "comun", "foros", "chats"]:
+        #     return handle_data(data, clase)
+        # else:
+        #     print("Clase no encontrada")
+        #     print('received {!r}'.format(data))
+        #     return {}
+        message = b''
+        
+        while amount_received < amount_expected:
+            print ('Soy el while:')
+            print('ammount:', amount_received)
+            print ('cantidad recivida:', amount_received)
+            print ('---------------')
+            data = sock.recv(amount_expected - amount_received)
+            name_function = data[0:5]
+            if total_message == b'':
+                print (data, 'DATAAA')
+                #largo_total = data[10:15]
+                #print('Largo total: ', largo_total)
+                messaje = data
+                total_message = messaje
+                
+                amount_received += len(data) + 12
+                
+                print('total message:', total_message)
+                print ('-----1------')
 
-    while amount_received < amount_expected:
-        chunk = sock.recv(amount_expected - amount_received)
-        if not chunk:
-            break
-        data += chunk
-        amount_received += len(chunk)
-    
-    print(data, 'RAW DATA')
-    print("Esperando Respuesta ...")
-    if clase in ["suser", "comun", "foros", "chats"]:
-        return handle_data(data, clase)
-    else:
-        print("Clase no encontrada")
-        print('received {!r}'.format(data))
-        return {}
+                
+            else:
+                print('total message:', total_message)
+                total_message += data
+                amount_received += len(data) + 12
+                
+            print('ammount pene:', amount_received)
+            print('cantidad recivida:', amount_received)
+            print ('-----2------')
+
+        print('total message_final:', total_message)
+        print('----3------')
+        print('len total message:', len(total_message))
+        print('ammount:', amount_expected)
+        print ('total lenght', total_lenght)
+        if len(total_message) + 10 == total_lenght and total_message != b'':
+            print('ENTRE a la wa')
+            messaje = b''
+            #total_message = total_message[10:]
+            print('mensaje total:', total_message)
+            data = total_message
+            total_message = b''
+            total_lenght = 0
+            # print("Enviando respuesta")
+            # message = b'00013serviReceived'
+            # print('Enviando {!r}'.format(message))
+            # sock.sendall(message)
+            if clase in ["suser", "comun", "foros", "chats"]:
+                return handle_data(data, clase)
+            else:
+                print("Clase no encontrada")
+                print('received {!r}'.format(data))
+                return {}
+        else:
+            print ('no entré al if')
+
 
 def cliente_login(sock):
     rut = input("Ingrese el rut del usuario: ")
@@ -253,7 +323,7 @@ def gestion_usuarios(sock, data_usuario):
         "Modificar privacidad": "7",
         "Volver al menú principal": "8"
     }
-    total_message = b''
+    
     while True:
         # Mostrar las opciones del menú según el tipo de usuario
         print("\nSeleccione una operación de Gestión de Usuarios:")
