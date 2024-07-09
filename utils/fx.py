@@ -34,14 +34,23 @@ def handle_data(data, clase):
         print("No hay datos después de 'OK'")
         return {}
 
+
 def transaction(sock, clase, json_data):
-    print(json_data)
+    print("Enviando transaccion ...")
+    print("Clase: ", clase)
+    print ("------------------")
+    print ("JSON: ", json_data)
+    print ("------------------")
+    print ("Creando Mensaje ...")   
     message = dt.create_transaction(clase, json_data)
+    print ("Mensaje: ", message)
+    print ("------------------")
+    print ("Enviando Mensaje ...")
     print('sending {!r}'.format(message))
     sock.sendall(message)
-
+    print ("------------------")
     # Esperar la respuesta
-    print("...Esperando transaccion")
+    print("...Esperando transaccion respuesta")
     amount_received = 0
     amount_expected = int(sock.recv(5).decode())  # Decodificar la cantidad esperada
     data = b''
@@ -244,7 +253,7 @@ def gestion_usuarios(sock, data_usuario):
         "Modificar privacidad": "7",
         "Volver al menú principal": "8"
     }
-
+    total_message = b''
     while True:
         # Mostrar las opciones del menú según el tipo de usuario
         print("\nSeleccione una operación de Gestión de Usuarios:")
