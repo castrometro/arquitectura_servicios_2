@@ -37,7 +37,7 @@ def get_usuario(id_usuario):
     session = get_session()
     try:
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
-        return usuario
+        return usuario.to_dict()
     except NoResultFound:
         return {'error': 'Usuario no encontrado'}
     finally:
@@ -104,7 +104,7 @@ def update_usuario(id_usuario, rut, tipo_usuario, correo, fono, nombre, apellido
     try:
         usuario = session.query(Usuario).filter(Usuario.id_usuario == id_usuario).one()
         
-        # Solo actualizar los campos que no son 0
+        # Solo actualizar los campos que no son vacios
         if rut != '':
             usuario.rut = rut
         if tipo_usuario != '':

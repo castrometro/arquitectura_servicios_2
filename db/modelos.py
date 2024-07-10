@@ -34,14 +34,12 @@ class Departamento(Base):
     id_departamento = Column(Integer, primary_key=True)
     id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad', onupdate='CASCADE', ondelete='SET NULL'))
     numero = Column(String(50))
-    id_usuario_propietario = Column(Integer, ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='SET NULL'))
     
     def to_dict(self):
         return {
             'id_departamento': self.id_departamento,
             'id_comunidad': self.id_comunidad,
             'numero': self.numero,
-            'id_usuario_propietario': self.id_usuario_propietario
         }
     
 class Comunidad(Base):
@@ -90,6 +88,7 @@ class Foro(Base):
 class Usuario(Base):
     __tablename__ = 'usuario'
     id_comunidad = Column(Integer, ForeignKey('comunidad.id_comunidad', onupdate='CASCADE', ondelete='SET NULL'))
+    id_departamento = Column(Integer, ForeignKey('departamento.id_departamento', onupdate='CASCADE', ondelete='SET NULL'))
     id_usuario = Column(Integer, primary_key=True, autoincrement=True)
     rut = Column(String(50))
     tipo_usuario = Column(String(50))
@@ -105,6 +104,7 @@ class Usuario(Base):
     def to_dict(self):
         return {
             'id_comunidad': self.id_comunidad,
+            'id_departamento:': self.id_departamento,
             'id_usuario': self.id_usuario,
             'rut': self.rut,
             'tipo_usuario': self.tipo_usuario,

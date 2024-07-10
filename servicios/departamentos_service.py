@@ -6,19 +6,19 @@ import logging
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import utils.bus as bus
-from db.departamentos import create_departamento, delete_departamento, update_departamento, add_usuario_to_departamento, remove_usuario_from_departamento, get_usuarios_by_departamento, validate_usuario, delete_usuario, update_usuario, get_departamento
+from db.departamentos import *
 
 # Configurar logging
 logging.basicConfig(filename='departamento_service.log', level=logging.INFO, format='%(asctime)s %(message)s')
 
 def handle_create_departamento(data):
-    required_fields = ['id_comunidad', 'numero', 'id_usuario_propietario']
+    required_fields = ['id_comunidad', 'numero']
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
         return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
     
-    departamento = create_departamento(data['id_comunidad'], data['numero'], data['id_usuario_propietario'])
-    return 'OK'
+    departamento = create_departamento(data['id_comunidad'], data['numero'])
+    return json.dumps(departamento)
 
 def handle_delete_departamento(data):
     required_fields = ['id_departamento']
@@ -92,6 +92,22 @@ def handle_update_usuario(data):
     usuario = update_usuario(data['id_usuario'], data.get('rut'), data.get('tipo_usuario'), data.get('correo'), data.get('fono'), data.get('nombre'), data.get('apellido_paterno'), data.get('apellido_materno'), data.get('estado_cuenta'), data.get('contrasena'))
     return 'OK'
 
+# def handle_get_num_dpto_id_dpto(data):
+
+
+# def handle_get_id_dpto_num_dpto(data):
+
+
+
+def handle_get_departamento(data):
+    required_fields = ['numero', 'id_comunidad']
+    missing_fields = [field for field in required_fields if field not in data]
+    if missing_fields:
+        return json.dumps({'error': 'Missing required fields', 'missing_fields': missing_fields})
+    
+    departamento = get_departamento(data['id_departamento'])
+    return json.dumps(departamento)
+
 def process_departamento_service(data):
     name_function = data['name_function']
     data = data['data']
@@ -106,6 +122,8 @@ def process_departamento_service(data):
         return handle_add_usuario_to_departamento(data)
     elif name_function == 'remove_usuario':
         return handle_remove_usuario_from_departamento(data)
+    elif name_function == 'get':
+        return handle_get_departamento(data)
     elif name_function == 'get_usuarios':
         return handle_get_usuarios_by_departamento(data)
     elif name_function == 'validate_usuario':
@@ -119,4 +137,4 @@ def process_departamento_service(data):
 
 if __name__ == "__main__":
     logging.info('Departamento service started')
-    bus.run_service(process_departamento_service, 'departamento')
+    bus.run_service(process_departamento_service, 'depto')

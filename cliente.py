@@ -1,6 +1,9 @@
 import socket
 import utils.data_transaction as dt
 from utils.fx import *
+from colorama import Fore, Style, init
+import os
+init(autoreset=True)
 
 def mostrar_menu(opciones):
     print("\nSeleccione un servicio:")
@@ -24,16 +27,17 @@ def menu_inicio():
     print("Conectando al bus....")
     sock = connect_to_bus()
     try:
-
         datos = cliente_login(sock)
-        print(datos)
+        #print(datos)
         if 'error' in datos:
-            print(datos['error'], 'intentelo denuevo')
+            #print datos[error]con color rojo siguiendo el formato: f"{Fore.GREEN}Bot: {molly_response}{Style.RESET_ALL}")
+            print(f"{Fore.RED}Intente de nuevo{Style.RESET_ALL}")
             sleep(2)
             print("-----------------------------------")
             menu_inicio()
         else:
-            print("Inicio de sesión exitoso.")
+            #salida con color
+            
             data_usuario = datos
             main_menu(data_usuario, data_usuario['tipo_usuario'], sock)
         # main_menu(data_usuario,data_usuario['tipo_usuario'],sock)
@@ -46,14 +50,19 @@ def menu_inicio():
 
 
 def main_menu(data_usuario, tipo_usuario, sock):
+    # os.system('clear')
+    print(f"{Fore.YELLOW}-------------------------------------------{Style.RESET_ALL}")
+    string = f"{Fore.LIGHTBLUE_EX}Bienvenido: {Style.RESET_ALL}{Fore.LIGHTYELLOW_EX}{data_usuario['nombre']} {data_usuario['apellido_paterno']} {data_usuario['apellido_materno']}{Style.RESET_ALL}"
+    print(string)
+    print(f"{Fore.YELLOW}-------------------------------------------{Style.RESET_ALL}")
 
-    print (f"Bienvenido {data_usuario['nombre']} {data_usuario['apellido_paterno']} {data_usuario['apellido_materno']}")
 
     opciones_admin_sistema = {
         '1': {'nombre': 'Gestión de Usuarios', 'funcion': gestion_usuarios},
         '2': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '3': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
         '4': {'nombre': 'CHAT', 'funcion': chat},
+        '5': {'nombre': 'Gestión de Departamentos', 'funcion': gestion_departamento}
     }
 
     opciones_admin = {
@@ -61,18 +70,21 @@ def main_menu(data_usuario, tipo_usuario, sock):
         '2': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '3': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
         '4': {'nombre': 'CHAT', 'funcion': chat},
+        '5': {'nombre': 'Gestión de Departamentos', 'funcion': gestion_departamento}
     }
 
     opciones_residente = {
         '1': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
         '3': {'nombre': 'CHAT', 'funcion': chat},
+        '4': {'nombre': 'Gestión de Departamentos', 'funcion': gestion_departamento},
     }
 
     opciones_conserje = {
         '1': {'nombre': 'Gestión de Comunidad', 'funcion': gestion_comunidad},
         '2': {'nombre': 'Gestión de Foros', 'funcion': gestion_foros},
         '3': {'nombre': 'CHAT', 'funcion': chat},
+        '4': {'nombre': 'Gestión de Departamentos', 'funcion': gestion_departamento},
     }
 
     if tipo_usuario == 'ADMINISTRADOR_SISTEMA':
@@ -84,7 +96,9 @@ def main_menu(data_usuario, tipo_usuario, sock):
     elif tipo_usuario == 'CONSERJE':
         opciones = opciones_conserje
     else:
-        print("Tipo de usuario no reconocido.")
+        #tipo de usuario no reconocido con color rojo
+        print("\033[1;31;40mTipo de usuario no reconocido\033[m")
+        
         return
     
     while True:

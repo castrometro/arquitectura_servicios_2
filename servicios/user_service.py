@@ -72,7 +72,7 @@ def handle_update_user(data):
     if isinstance(usuario, dict) and 'error' in usuario:
         return json.dumps(usuario)
     else:
-        return json.dumps(usuario.to_dict())
+        return json.dumps(usuario)
 
 def handle_delete_user(data):
     required_fields = ['id_usuario']

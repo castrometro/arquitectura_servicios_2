@@ -4,70 +4,87 @@ import sys
 from time import sleep
 import utils.data_transaction as dt
 total_message = b''
+from colorama import Fore, Style, init
+init(autoreset=True)
+# while True:
+#     user_input = input(f"{Fore.YELLOW}Tú: {Style.RESET_ALL}")
+#     chat_manager.add_message(user_id, user_input)
+#     molly_response = chat_manager.get_response(user_id)
+#     print(f"{Fore.GREEN}Bot: {molly_response}{Style.RESET_ALL}")
 
 def handle_data(data, clase):
-    print('handle data-------')
+    # print('handle data-------')
     decoded_data = data.decode('utf-8', errors='ignore')
-    print ("Decoded data: ", decoded_data)
+    # print ("Decoded data: ", decoded_data)
     prefix = clase + 'OK'
     
     if len(decoded_data) > len(prefix):
         json_str = decoded_data
-        print ("JSON: ", json_str)
+        # print ("JSON: ", json_str)
         try:
-            print(json_str)
+            # print(json_str)
             data_dict = js.loads(json_str)
         except js.JSONDecodeError:
-            print("OK, no hay json")
-            return {}
+            # print("OK, no hay json")
+            return {'error': "No hay JSON"}
         
         if isinstance(data_dict, list):
-            print("Los datos son una lista:")
+            #print("Los datos son una lista:")
             for item in data_dict:
-                print(item)
+                print(f"{Fore.YELLOW}------------------------{Style.RESET_ALL}")
+                for subitem in item:
+                    if subitem == 'error' and item[subitem] != 'Usuario no encontrado' and item[subitem] != 'Credenciales invalidas':
+                        print(f"{Fore.RED}{subitem}: {item[subitem]}{Style.RESET_ALL}")
+                    elif subitem != 'error':
+                        print(f"{Fore.GREEN}{subitem}: {item[subitem]}{Style.RESET_ALL}")
+                #print(f"{Fore.GREEN}{item}{Style.RESET_ALL}")
             return data_dict
         elif isinstance(data_dict, dict):
-            print("Los datos son un diccionario:")
+            #print("Los datos son un diccionario:")
             for key, value in data_dict.items():
-                print(key, ":", value)
+                if key == 'error':
+                    print(f"{Fore.RED}{key}{Style.RESET_ALL}")
+                    print(f"{Fore.RED}{value}{Style.RESET_ALL}")
+                elif key != 'error': 
+                    string = f"{Fore.LIGHTGREEN_EX}{key}{Style.RESET_ALL}:{Fore.GREEN}{value}{Style.RESET_ALL}"
+                    print(string)
             return data_dict
         else:
-            print("Los datos no son ni una lista ni un diccionario.")
-            return {}
+            return {'error': "Los datos no son ni una lista ni un diccionario."}
     else:
         print("No hay datos después de 'OK'")
-        return {}
+        return {'error': "No hay datos después de 'OK'"}
 total_lenght = 0
 total_message = b''
 def transaction(sock, clase, json_data):
     global total_lenght 
     global total_message
-    print ("------------------")
-    print("Enviando transaccion ...")
-    print("Clase: ", clase)
-    print ("------------------")
-    print ("JSON: ", json_data)
-    print ("------------------")
-    print ("Creando Mensaje ...")   
+    # print ("------------------")
+    # print("Enviando transaccion ...")
+    # print("Clase: ", clase)
+    # print ("------------------")
+    # print ("JSON: ", json_data)
+    # print ("------------------")
+    # print ("Creando Mensaje ...")   
     message = dt.create_transaction(clase, json_data)
-    print ("Mensaje: ", message)
-    print ("------------------")
-    print ("Enviando Mensaje ...")
-    print('sending {!r}'.format(message))
+    # print ("Mensaje: ", message)
+    # print ("------------------")
+    # print ("Enviando Mensaje ...")
+    # print('sending {!r}'.format(message))
     sock.sendall(message)
-    print ("------------------")
+    # print ("------------------")
     while len(total_message) != total_lenght or total_message == b'':
         # Esperar la respuesta
-        print("...Esperando transaccion respuesta")
+        # print("...Esperando transaccion respuesta")
         amount_received = 0
         a = sock.recv(17).decode()
-        print ("------------------")
-        print("Recibido: ", a)
-        print ("------------------")
+        # print ("------------------")
+        # print("Recibido: ", a)
+        # print ("------------------")
         amount_expected = int(a[0:5])
         total_lenght = int(a[12:]) # Decodificar la cantidad esperada
-        print("Cantidad Total: ", total_lenght)
-        print("Cantidad esperada: ", amount_expected)
+        # print("Cantidad Total: ", total_lenght)
+        # print("Cantidad esperada: ", amount_expected)
         # data = b''
         # total_message = b''
         # while amount_received < amount_expected:
@@ -86,14 +103,14 @@ def transaction(sock, clase, json_data):
         message = b''
         
         while amount_received < amount_expected:
-            print ('Soy el while:')
-            print('ammount:', amount_received)
-            print ('cantidad recivida:', amount_received)
-            print ('---------------')
+            # print ('Soy el while:')
+            # print('ammount:', amount_received)
+            # print ('cantidad recivida:', amount_received)
+            # print ('---------------')
             data = sock.recv(amount_expected - amount_received)
             name_function = data[0:5]
             if total_message == b'':
-                print (data, 'DATAAA')
+                # print (data, 'DATAAA')
                 #largo_total = data[10:15]
                 #print('Largo total: ', largo_total)
                 messaje = data
@@ -101,29 +118,29 @@ def transaction(sock, clase, json_data):
                 
                 amount_received += len(data) + 12
                 
-                print('total message:', total_message)
-                print ('-----1------')
+                # print('total message:', total_message)
+                # print ('-----1------')
 
                 
             else:
-                print('total message:', total_message)
+                # print('total message:', total_message)
                 total_message += data
                 amount_received += len(data) + 12
                 
-            print('ammount pene:', amount_received)
-            print('cantidad recivida:', amount_received)
-            print ('-----2------')
+            # print('ammount pene:', amount_received)
+            # print('cantidad recivida:', amount_received)
+            # print ('-----2------')
 
-        print('total message_final:', total_message)
-        print('----3------')
-        print('len total message:', len(total_message))
-        print('ammount:', amount_expected)
-        print ('total lenght', total_lenght)
+        # print('total message_final:', total_message)
+        # print('----3------')
+        # print('len total message:', len(total_message))
+        # print('ammount:', amount_expected)
+        # print ('total lenght', total_lenght)
         if len(total_message) + 10 == total_lenght and total_message != b'':
-            print('ENTRE a la wa')
+            # print('ENTRE a la wa')
             messaje = b''
             #total_message = total_message[10:]
-            print('mensaje total:', total_message)
+            # print('mensaje total:', total_message)
             data = total_message
             total_message = b''
             total_lenght = 0
@@ -134,16 +151,17 @@ def transaction(sock, clase, json_data):
             if clase in ["suser", "comun", "foros", "chats"]:
                 return handle_data(data, clase)
             else:
-                print("Clase no encontrada")
-                print('received {!r}'.format(data))
-                return {}
-        else:
-            print ('no entré al if')
+                # print("Clase no encontrada")
+                # print('received {!r}'.format(data))
+                return {'error': "Clase no encontrada"}
+        # else:
+        #     print ('no entré al if')
 
 
 def cliente_login(sock):
-    rut = input("Ingrese el rut del usuario: ")
-    contrasena = input("Ingrese la contraseña del usuario: ")
+    rut = input(f"{Fore.YELLOW}Ingrese el rut del usuario: {Style.RESET_ALL}")
+    # input(f"{Fore.YELLOW}Tú: {Style.RESET_ALL}")
+    contrasena = input(f"{Fore.YELLOW}Ingrese la contraseña del usuario: {Style.RESET_ALL}")
     # Transformar datos a DATA del JSON
     json = {
         "name_function": "login",
@@ -153,7 +171,7 @@ def cliente_login(sock):
             }
     }
 
-    print ("------------------")
+    # print ("------------------")
     data_dict = transaction(sock, "suser", json)
     return data_dict
     #return estado, usuario
@@ -360,19 +378,21 @@ def gestion_usuarios(sock, data_usuario):
                 response = transaction(sock, clase, json)
                 if 'error' not in response:
                     print('Usuario Encontrado')
-                    rut_usuario = input("Ingrese el nuevo rut del usuario o '0' para mantener el actual:") or response['rut']
-                    user_type = input("Ingrese el nuevo tipo del usuario o '0' para mantener el actual:") or response['tipo_usuario']
-                    correo = input("Ingrese el nuevo email del usuario o '0' para mantener el actual:") or response['correo']
-                    fono = input("Ingrese el nuevo fono del usuario o '0' para mantener el actual:") or response['fono']
-                    nombre = input("Ingrese el nuevo nombre del usuario o '0' para mantener el actual:") or response['nombre']
-                    apellido_paterno = input("Ingrese el nuevo apellido paterno del usuario o '0' para mantener el actual:") or response['apellido_paterno']
-                    apellido_materno = input("Ingrese el nuevo apellido materno del usuario o '0' para mantener el actual:") or response['apellido_materno']
-                    estado_cuenta = input("Ingrese el nuevo estado de cuenta del usuario o '0' para mantener el actual:") or response['estado_cuenta']
+                    rut_usuario = input("Ingrese el nuevo rut del usuario o 'enter  para mantener el actual:") or response['rut']
+                    id_departamento = input("Ingrese el nuevo id de departamento del usuario o enter  para mantener el actual:") or response['numero_departamento']
+                    user_type = input("Ingrese el nuevo tipo del usuario o enter  para mantener el actual:") or response['tipo_usuario']
+                    correo = input("Ingrese el nuevo email del usuario o enter  para mantener el actual:") or response['correo']
+                    fono = input("Ingrese el nuevo fono del usuario o enter  para mantener el actual:") or response['fono']
+                    nombre = input("Ingrese el nuevo nombre del usuario o enter  para mantener el actual:") or response['nombre']
+                    apellido_paterno = input("Ingrese el nuevo apellido paterno del usuario o enter para mantener el actual:") or response['apellido_paterno']
+                    apellido_materno = input("Ingrese el nuevo apellido materno del usuario o enter  para mantener el actual:") or response['apellido_materno']
+                    estado_cuenta = input("Ingrese el nuevo estado de cuenta del usuario o enter  para mantener el actual:") or response['estado_cuenta']
 
                     json = {
                         "name_function": "update",
                         "data": {
                             "id_usuario": id_usuario,
+                            'numero': id_departamento,
                             "rut": rut_usuario,
                             "tipo_usuario": user_type,
                             "correo": correo,
@@ -399,6 +419,7 @@ def gestion_usuarios(sock, data_usuario):
 
             elif accion == "Crear usuario":
                 id_comunidad = input("Ingrese el id de la comunidad del nuevo usuario: ")
+                id_departamento = input("Ingrese el id del departamento del nuevo usuario: ")
                 rut = input("Ingrese el rut del nuevo usuario: ")
                 tipo_usuario = input("Ingrese el tipo del nuevo usuario: ")
                 correo = input("Ingrese el email del nuevo usuario: ")
@@ -412,6 +433,7 @@ def gestion_usuarios(sock, data_usuario):
                     "name_function": "create",
                     "data": {
                         "id_comunidad": id_comunidad,
+                        "id_departamento": id_departamento,
                         "rut": rut,
                         "tipo_usuario": tipo_usuario,
                         "correo": correo,
@@ -721,10 +743,137 @@ def gestion_foros(sock, data_usuario):
         else:
             print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")
 
-def gestion_productos(sock, data_usuario):
-    return 0
+def gestion_departamento(sock, data_usuario):
+    clase = "depto"
+    tipo_usuario = data_usuario['tipo_usuario']
 
-def gestion_servicios(sock, data_usuario):
-    return 0
+    # Definir las opciones del menú para cada tipo de usuario
+    menus = {
+        'RESIDENTE': [
+            "Ver departamento",
+            "Mostrar departamentos"
+        ],
+        'CONSERJE': [
+            "Ver Departamento",
+            "Mostrar Departamentos"
+        ],
+        'ADMINISTRADOR': [
+            "Crear Departamento",
+            "Ver Departamento",
+            "Mostrar Departamentos"
+        ],
+        'ADMINISTRADOR_SISTEMA': [
+            "Crear Departamento",
+            "Ver Departamento",
+            "Mostrar Departamentos",
+            "Eliminar Departamento"
+        ]
+    }
 
+    while True:
+        # Mostrar las opciones del menú según el tipo de usuario
+        print("\nSeleccione una operación de Gestión de Departamento:")
+        opciones_disponibles = menus[tipo_usuario]
+        for i, opcion in enumerate(opciones_disponibles, start=1):
+            print(f"{i}. {opcion}")
 
+        print(f"{len(opciones_disponibles) + 1}. Volver al menú principal")
+
+        opcion = input("Ingrese el número de la operación: ")
+
+        if opcion == str(len(opciones_disponibles) + 1):
+            break
+        elif opcion.isdigit() and 1 <= int(opcion) <= len(opciones_disponibles):
+            accion = opciones_disponibles[int(opcion) - 1]
+
+            if accion == "Crear Departamento":
+                comunidad_id = input("Ingrese el ID de la comunidad donde crear el Departamento:")
+                json = {
+                    "name_function": "get",
+                    "data": {
+                        "id_comunidad": comunidad_id,
+                    }
+                }
+                response = transaction(sock,'comun', json)
+                if 'error' not in response:
+                    print('Comunidad Encontrada')
+                    numero_departamento = input("Ingrese el número del Departamento:")
+                    json = {
+                        "name_function": "create",
+                        "data": {
+                            "id_comunidad": comunidad_id,
+                            "numero": numero_departamento,
+                        }
+                    }
+                    transaction(sock, clase, json)
+                    print('Departamento Creado')
+                else:
+                    print('Comunidad No existe')
+
+            elif accion == "Ver Departamento":
+                comunidad_id = input("Ingrese el ID de la comunidad donde ver el Departamento:")
+                json = {
+                    "name_function": "get",
+                    "data": {
+                        "id_comunidad": comunidad_id,
+                    }
+                }
+                response = transaction(sock,'comun', json)
+                if 'error' not in response:
+                    numero_departamento= input("Ingrese el numero del Departamento a ver: ")
+                    json = {
+                        "name_function": "get",
+                        "data": {
+                            "numero": numero_departamento,
+                            "id_comunidad": comunidad_id
+                        }
+                    }
+                    transaction(sock, clase, json)
+
+            elif accion == "Mostrar Departamentos":
+                comunidad_id = input("Ingrese el ID de la comunidad a ver: ")
+                json = {
+                    "name_function": "all",
+                    "data": {
+                        "id_comunidad": comunidad_id,
+                    }
+                } 
+                transaction(sock, clase, json)
+
+            # elif accion == "Actualizar Departamento":
+            #     id_Departamento = input("Ingrese el ID de la Departamento a actualizar: ")
+            #     json = {
+            #         "name_function": "get",
+            #         "data": {
+            #             "id_Departamento": id_Departamento,
+            #         }
+            #     }
+                # response = transaction(sock, clase, json)
+                # if 'error' not in response:
+                #     print('Departamento Encontrada')
+                #     nombre_Departamento = input("Ingrese el nuevo nombre de la Departamento o enter para mantener el actual:") or response['nombre_Departamento']
+            
+                #     json = {
+                #         "name_function": "update",
+                #         "data": {
+                #             "id_Departamento": id_Departamento,
+                #             "nombre_Departamento": nombre_Departamento,
+                #         }
+                #     }
+                #     transaction(sock, clase, json)
+                # else:
+                #     print('Departamento No existe')
+
+            elif accion == "Eliminar Departamento":
+                id_comunidad = input("Ingrese el ID de la comunidad a la que pertenece el Departamento a eliminar:")
+                numero = input("Ingrese el numero de la Departamento a eliminar: ")
+                json = {
+                    "name_function": "delete",
+                    "data": {
+                        "numero": numero,
+                        "id_comunidad": id_comunidad
+                    }
+                }
+                transaction(sock, clase, json)
+        else:
+            print("Opción no válida o no tiene acceso a esta opción. Inténtelo de nuevo.")

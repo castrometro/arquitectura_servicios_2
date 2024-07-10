@@ -5,13 +5,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from db.modelos import Departamento, Usuario_Departamento, Usuario, get_session, Comunidad
 
 # Funciones de Departamento
-def create_departamento(id_comunidad, numero, id_usuario_propietario):
+def create_departamento(id_comunidad, numero):
     session = get_session()
     try:
-        departamento = Departamento(id_comunidad=id_comunidad, numero=numero, id_usuario_propietario=id_usuario_propietario)
+        departamento = Departamento(id_comunidad=id_comunidad, numero=numero)
         session.add(departamento)
         session.commit()
-        return departamento
+        return {'message': 'Departamento creado con exito'}
     finally:
         session.close()
 
@@ -21,18 +21,16 @@ def delete_departamento(id_departamento):
         departamento = session.query(Departamento).filter(Departamento.id_departamento == id_departamento).one()
         session.delete(departamento)
         session.commit()
-        return departamento
+        return 'OK'
     finally:
         session.close()
 
-def update_departamento(id_departamento, numero=None, id_usuario_propietario=None):
+def update_departamento(id_departamento, numero=None ):
     session = get_session()
     try:
         departamento = session.query(Departamento).filter(Departamento.id_departamento == id_departamento).one()
         if numero:
             departamento.numero = numero
-        if id_usuario_propietario:
-            departamento.id_usuario_propietario = id_usuario_propietario
         session.commit()
         return departamento
     finally:
